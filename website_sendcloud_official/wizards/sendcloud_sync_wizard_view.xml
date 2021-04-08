@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sendcloud_onboarding_sync_configuration_form" model="ir.ui.view">
+        <field name="model">sendcloud.sync.wizard</field>
+        <field name="inherit_id" ref="delivery_sendcloud_official.sendcloud_onboarding_sync_configuration_form"/>
+        <field name="arch" type="xml">
+            <group name="options">
+                <field name="publish_all_shipping_methods" attrs="{'invisible': [('shipping_methods', '!=', True)]}"/>
+            </group>
+        </field>
+    </record>
+
+</odoo>

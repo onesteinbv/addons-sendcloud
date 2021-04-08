@@ -1,0 +1,13 @@
+.o_delivery_sendcloud_widget {
+    .o_delivery_sendcloud_select {
+        min-width: 30px;
+    }
+
+    .o_delivery_sendcloud_detail {
+        background-color: $white;
+        resize: none;
+        box-shadow: none;
+        border: 1px solid $border-color;
+        min-height: 1em;
+    }
+}

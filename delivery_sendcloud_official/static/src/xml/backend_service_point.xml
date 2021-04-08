@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+    <t t-name="delivery_sendcloud_official.ServicePointSelector">
+        <div class="o_delivery_sendcloud_widget">
+            <div class="input-group">
+                <textarea
+                    class="form-control o_delivery_sendcloud_detail"
+                    t-esc="value"
+                    readonly="1"
+                    rows="1"
+                ></textarea>
+                <div class="input-group-append">
+                    <button
+                        class="btn btn-primary o_delivery_sendcloud_select"
+                        title="Select"
+                    >
+                        <i class="fa fa-map-marker" />
+                    </button>
+                    <button
+                        t-if="value"
+                        title="Clear"
+                        class="btn btn-secondary o_delivery_sendcloud_clear"
+                    >
+                        <i class="fa fa-times" />
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+    <t t-name="delivery_sendcloud_official.ServicePointAddress">
+        <div>
+            <t t-esc="servicePoint.name" />
+        </div>
+        <div>
+            <t t-esc="servicePoint.street" /> <t t-esc="servicePoint.house_number" />
+        </div>
+        <div>
+            <t t-esc="servicePoint.postal_code" />
+        </div>
+        <div>
+            <t t-esc="servicePoint.city" />
+        </div>
+    </t>
+</template>

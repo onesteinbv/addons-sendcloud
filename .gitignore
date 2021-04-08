@@ -14,8 +14,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
 parts/
 sdist/
 var/
@@ -50,6 +48,9 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+
+# Pycharm
+.idea
 
 # Translations
 *.mo

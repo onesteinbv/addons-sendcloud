@@ -1,1 +1,1 @@
-# addons-sendcloud
+# Addons SendCloud
