@@ -1,0 +1,61 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.23.0
+    method: GET
+    uri: https://panel.sendcloud.sc/api/v2/integrations
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA7WQPU/DMBCG/4tXkvbsuM7HzMLE0gGpqiwnuRAL17Fsp4AQ/x1HbSXKABKC8Z7z
+        q/f87N6I7klTlxXQjIRxctKqA5KGqBC1d7ghZzx7k+gyvYaIh+WF02kclDbaPsqgbZdydjYmIyal
+        5YCxG6/I7HoVsZcqpjgDBjmIHIotLRpWNptqJQqR6A2wBmCpQn/UHUo3aRslWtUaTNdGP+PXZae8
+        1+gDaXbETSFaQ/YZecZ2nKYnqbqoj3hJXujpS2OMLjTr9Zmugo64prxsuRh43qpiyHmHLK8KOuSV
+        EgwE1APvBXnPTvYoAIfqWt/9w93ttbrf93xyPr2kwr+QzrZQL9JZveKUQsl/kj4oE76z/v+29x+W
+        DWTvrQIAAA==
+    headers:
+      Allow:
+      - GET, PUT, HEAD, OPTIONS
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 04 Jun 2020 11:03:18 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=60; includeSubDomains; preload
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      - Origin, Cookie
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-SendCloud-Client-Latest-Version-Linux:
+      - 1.0.2
+      X-SendCloud-Client-Latest-Version-Windows:
+      - 1.0.4
+      X-SendCloud-Client-Latest-Version-macOS:
+      - 1.0.5
+      X-SendCloud-Panel-ID:
+      - 918162306e51bf6f4ce91256e5b9fa6a07265abd
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

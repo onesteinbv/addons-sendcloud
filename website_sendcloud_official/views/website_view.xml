@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!--    <record id="view_website_form" model="ir.ui.view">-->
+<!--        <field name="model">website</field>-->
+<!--        <field name="inherit_id" ref="website.view_website_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <sheet>-->
+<!--                <div name="sendcloud">-->
+<!--                    <group name="sendcloud" string="SendCloud">-->
+<!--                        <button name="sendcloud_update_shipping_methods" icon="fa-arrow-right" type="object" string="Update Shipping Methods" class="btn-link"/>-->
+<!--                    </group>-->
+<!--                </div>-->
+<!--            </sheet>-->
+<!--        </field>-->
+<!--    </record>-->
+
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_configuration_sendcloud_website_brand"
+              action="action_sendcloud_onboarding_website_wizard"
+              parent="delivery_sendcloud_official.menu_sendcloud_sendcloud_config_wizards"
+    />
+
+</odoo>

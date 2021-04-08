@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sendcloud_onboarding_integration_configuration_form" model="ir.ui.view">
+        <field name="model">sendcloud.integration.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="configuration" widget="radio" />
+                    <group attrs="{'invisible':[('configuration', '!=', 'api')]}">
+                        <field name="public_key" attrs="{'required': [('configuration', '=', 'api')]}"/>
+                        <field name="secret_key" attrs="{'required': [('configuration', '=', 'api')]}"/>
+                    </group>
+                </group>
+<!--                <group attrs="{'invisible':[('configuration', '!=', 'odoo')]}">-->
+<!--                    <field name="base_url" widget="url"/>-->
+<!--                    <field name="integration_request_url" widget="url"/>-->
+<!--                </group>-->
+                <div role="alert" class="alert alert-warning" attrs="{'invisible': [('error_message', '=', False)]}">
+                    <field name="error_message" nolabel="1"/>
+                </div>
+                <div role="alert" class="alert alert-info" attrs="{'invisible': [('info_message', '=', False)]}">
+                    <field name="info_message" nolabel="1"/>
+                </div>
+                <footer>
+                    <button string="Confirm" name="button_update" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

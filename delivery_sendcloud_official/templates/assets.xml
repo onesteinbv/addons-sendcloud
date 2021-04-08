@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_common" inherit_id="web.assets_common">
+        <xpath expr=".">
+            <script type="text/javascript" src='/delivery_sendcloud_official/static/src/lib/sendcloud/api.min.js'/>
+            <script type="text/javascript" src="/delivery_sendcloud_official/static/src/js/common.js"/>
+        </xpath>
+    </template>
+
+    <template id="assets_backend" inherit_id="web.assets_backend">
+        <xpath expr=".">
+            <script type="text/javascript" src="/delivery_sendcloud_official/static/src/js/backend.js"/>
+        </xpath>
+
+        <xpath expr="//link[last()]" position="after">
+            <link href="/delivery_sendcloud_official/static/src/scss/backend.scss" type="text/scss" rel="stylesheet" />
+        </xpath>
+    </template>
+
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ONBOARDING STEPS -->
+    <template id="onboarding_website_brand_step">
+        <t t-call="base.onboarding_step">
+            <t t-set="title">Configure Website Brands</t>
+            <t t-set="description">Set SendCloud Website Brands.</t>
+            <t t-set="done_icon" t-value="'fa-star'" />
+            <t t-set="done_text">Enjoy!</t>
+            <t t-set="btn_text">Configure</t>
+            <t t-set="model" t-value="'res.company'" />
+            <t t-set="method" t-value="'action_open_sendcloud_onboarding_website_brand'" />
+            <t t-set="state" t-value="state.get('sendcloud_onboarding_website_brand_state')" />
+        </t>
+    </template>
+
+    <!-- ONBOARDING PANEL-->
+    <template id="sendcloud_onboarding_panel" name="sendcloud.onboarding.panel" inherit_id="delivery_sendcloud_official.sendcloud_onboarding_panel">
+        <xpath expr="//t[@t-call='delivery_sendcloud_official.onboarding_warehouse_address_step']" position="after">
+            <t t-call="website_sendcloud_official.onboarding_website_brand_step" name="website_brand_step" />
+        </xpath>
+    </template>
+
+    <!-- CONFIGURATION ACTIONS -->
+    <record id="action_sendcloud_onboarding_website_wizard" model="ir.actions.act_window">
+        <field name="name">Setup the sender brands of the websites</field>
+        <field name="res_model">sendcloud.website.brand.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="sendcloud_onboarding_website_configuration_form" />
+        <field name="target">new</field>
+    </record>
+
+</odoo>
