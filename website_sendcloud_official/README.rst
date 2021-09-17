@@ -7,15 +7,6 @@ SendCloud eCommerce
    !! changes will be overwritten.                   !!
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-.. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
-    :target: https://odoo-community.org/page/development-status
-    :alt: Beta
-.. |badge2| image:: https://img.shields.io/badge/licence-LGPL--3-blue.png
-    :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
-    :alt: License: LGPL-3
-
-|badge1| |badge2|
-
 This module is part of the SendCloud official connector for Odoo.
 
 At the moment, the SendCloud official connector for Odoo consists of two modules: delivery_sendcloud_official and website_sendcloud_official.

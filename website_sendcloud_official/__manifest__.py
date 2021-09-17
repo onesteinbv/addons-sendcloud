@@ -1,5 +1,5 @@
-# Copyright 2020 Onestein (<https://www.onestein.eu>)
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+# Copyright 2021 Onestein (<https://www.onestein.nl>)
+# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 {
     "name": "SendCloud eCommerce",
@@ -7,9 +7,8 @@
     "images": ["static/description/sendcloud_cover.jpeg"],
     "category": "Website/Website",
     "version": "14.0.1.0.0",
-    "development_status": "Beta",
     "author": "Onestein",
-    "license": "LGPL-3",
+    "license": "OPL-1",
     "depends": ["website_sale_delivery", "delivery_sendcloud_official"],
     "data": [
         "security/ir.model.access.csv",

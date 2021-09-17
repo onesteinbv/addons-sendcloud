@@ -1,5 +1,5 @@
-# Copyright 2020 Onestein (<https://www.onestein.eu>)
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+# Copyright 2021 Onestein (<https://www.onestein.nl>)
+# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 {
     "name": "SendCloud Shipping",
@@ -7,9 +7,8 @@
     "images": ["static/description/sendcloud_cover.jpeg"],
     "category": "Operations/Inventory/Delivery",
     "version": "14.0.1.0.0",
-    "development_status": "Beta",
     "author": "Onestein",
-    "license": "LGPL-3",
+    "license": "OPL-1",
     "depends": ["delivery", "base_address_extended"],
     "data": [
         "templates/assets.xml",
@@ -38,6 +37,7 @@
         "wizards/sendcloud_integration_wizard_view.xml",
         "wizards/sendcloud_sync_wizard_view.xml",
         "wizards/sendcloud_sync_order_wizard_view.xml",
+        "wizards/sendcloud_custom_price_details_wizard.xml",
         "views/sendcloud_onboarding_views.xml",
         "views/sendcloud_shipping_method_country_view.xml",
         "views/menu.xml",

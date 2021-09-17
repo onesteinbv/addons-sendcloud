@@ -1,5 +1,5 @@
-# Copyright 2020 Onestein (<https://www.onestein.eu>)
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+# Copyright 2021 Onestein (<https://www.onestein.nl>)
+# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 import json
 
@@ -287,7 +287,7 @@ class DeliveryCarrier(models.Model):
             ],
             limit=1,
         )
-        return shipping_method_country.price
+        return shipping_method_country.price_custom
 
     @api.model
     def _get_default_sender_address_per_company(self, company_id):

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-# Copyright 2020 Onestein (<http://www.onestein.eu>)
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
--->
+<!-- Copyright 2021 Onestein (<https://www.onestein.nl>)
+     License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps). -->
+
 <odoo>
 
     <record id="sendcloud_action_tree" model="ir.ui.view">

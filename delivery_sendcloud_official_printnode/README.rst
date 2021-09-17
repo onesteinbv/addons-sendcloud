@@ -12,8 +12,3 @@ shipping labels, making them compliant with Odoo Direct Print Pro.
 This way the shipping labels can be printed automatically.
 
 .. image:: /delivery_sendcloud_official_printnode/static/description/labelprinttab.png
-
-Please note that this module only works when you have purchased "Odoo Direct Print PRO"
-created by Ventortech. When you have purchased that module you should be able to
-download this module for free. Do not buy this module separate from the
-"Odoo Direct Print Pro" module.
