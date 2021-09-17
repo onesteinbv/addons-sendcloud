@@ -1,5 +1,5 @@
-# Copyright 2020 Onestein (<https://www.onestein.eu>)
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+# Copyright 2021 Onestein (<https://www.onestein.nl>)
+# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 import logging
 
@@ -113,6 +113,6 @@ class SaleOrder(models.Model):
     def _action_confirm(self):
         res = super()._action_confirm()
         pickings = self.mapped("picking_ids")
-        to_sync = pickings.filtered(lambda p: p.carrier_id.sendcloud_integration_id.system == "odoo")
+        to_sync = pickings.filtered(lambda p: p.carrier_id.sendcloud_integration_id)
         to_sync._sync_picking_to_sendcloud()
         return res

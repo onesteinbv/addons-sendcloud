@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2021 Onestein (<https://www.onestein.nl>)
+     License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps). -->
+
 <odoo>
     <record id="view_delivery_carrier_form" model="ir.ui.view">
         <field name="model">delivery.carrier</field>
@@ -19,11 +22,20 @@
                         <group>
                             <field name="sendcloud_min_weight" string="Min Weight" readonly="1"/>
                             <field name="sendcloud_max_weight" string="Max Weight" readonly="1"/>
-                            <field name="sendcloud_price" string="Price" readonly="1"/>
+                            <field name="sendcloud_price" string="Price" readonly="1" invisible="1"/>
                             <field name="sendcloud_is_return" string="Is Return" readonly="1"/>
                         </group>
                     </group>
-                    <field name="sendcloud_country_ids" />
+                    <field name="sendcloud_country_ids" >
+                        <tree editable="bottom" create="true" delete="false">
+                            <field name="from_country_id" readonly="1"/>
+                            <field name="from_iso_2" readonly="1"/>
+                            <field name="country_id" readonly="1"/>
+                            <field name="iso_2" readonly="1"/>
+                            <field name="price_custom" string="Price"/>
+                            <field name="price_check" widget="sendcloud_price_check_widget" />
+                        </tree>
+                    </field>
                 </page>
             </xpath>
         </field>

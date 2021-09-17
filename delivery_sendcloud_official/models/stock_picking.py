@@ -1,5 +1,5 @@
-# Copyright 2020 Onestein (<https://www.onestein.eu>)
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+# Copyright 2021 Onestein (<https://www.onestein.nl>)
+# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 from collections import defaultdict
 import logging
@@ -451,7 +451,6 @@ class StockPicking(models.Model):
             lambda p: p.delivery_type == "sendcloud"
             and p.carrier_id.delivery_type == "sendcloud"
             and p.picking_type_code == "outgoing"
-            and p.carrier_id.sendcloud_integration_id.system == "odoo"
         ):
             integration = picking.carrier_id.sendcloud_integration_id
             if picking.sendcloud_shipment_uuid:
@@ -517,7 +516,7 @@ class StockPicking(models.Model):
         res = super().write(vals)
         if not self.env.context.get("skip_sync_picking_to_sendcloud"):
             if any(item in self._sendcloud_vals_triggering_sync() for item in vals):
-                to_sync = self.filtered(lambda p: p.carrier_id.sendcloud_integration_id.system == "odoo")
+                to_sync = self.filtered(lambda p: p.carrier_id.sendcloud_integration_id)
                 to_sync._sync_picking_to_sendcloud()
         return res
 
@@ -594,49 +593,48 @@ class StockPicking(models.Model):
         return res
 
     def _sync_shipment_to_sendcloud(self, err_msg, integration, vals):
-        if integration.system == "odoo":
-            _logger.info("SendCloud create_shipments:%s", integration.sendcloud_code)
-            response = integration.create_shipments(integration.sendcloud_code, vals)
-            for confirmation in response:
-                status = confirmation.get("status")
+        _logger.info("SendCloud create_shipments:%s", integration.sendcloud_code)
+        response = integration.create_shipments(integration.sendcloud_code, vals)
+        for confirmation in response:
+            status = confirmation.get("status")
 
-                sendcloud_shipment_uuid = confirmation.get("shipment_uuid")
+            sendcloud_shipment_uuid = confirmation.get("shipment_uuid")
+            if len(self) == 1 and self.sendcloud_shipment_uuid == sendcloud_shipment_uuid:
+                picking = self
+            else:
+                picking = self.search([("sendcloud_shipment_uuid", "=", sendcloud_shipment_uuid)], limit=1)
+            if not picking:
+                external_shipment_id = confirmation.get("external_shipment_id")
+                if not external_shipment_id:
+                    raise  # TODO
                 if len(self) == 1 and self.sendcloud_shipment_uuid == sendcloud_shipment_uuid:
                     picking = self
                 else:
-                    picking = self.search([("sendcloud_shipment_uuid", "=", sendcloud_shipment_uuid)], limit=1)
-                if not picking:
-                    external_shipment_id = confirmation.get("external_shipment_id")
-                    if not external_shipment_id:
+                    picking = self.env["stock.picking"].search([("sendcloud_shipment_code", "=", external_shipment_id)])
+                    if len(picking) != 1:
                         raise  # TODO
-                    if len(self) == 1 and self.sendcloud_shipment_uuid == sendcloud_shipment_uuid:
-                        picking = self
-                    else:
-                        picking = self.env["stock.picking"].search([("sendcloud_shipment_code", "=", external_shipment_id)])
-                        if len(picking) != 1:
-                            raise  # TODO
 
-                if status == "created":
-                    picking.state = "assigned"
+            if status == "created":
+                picking.state = "assigned"
+                picking.sendcloud_shipment_uuid = sendcloud_shipment_uuid
+                picking.sendcloud_last_cached = fields.Datetime.now()
+            elif status == "updated":
+                if not picking.sendcloud_shipment_uuid:
                     picking.sendcloud_shipment_uuid = sendcloud_shipment_uuid
-                    picking.sendcloud_last_cached = fields.Datetime.now()
-                elif status == "updated":
-                    if not picking.sendcloud_shipment_uuid:
-                        picking.sendcloud_shipment_uuid = sendcloud_shipment_uuid
-                    picking.sendcloud_last_cached = fields.Datetime.now()
-                elif status == "error":
-                    error = confirmation.get("error")
-                    _logger.info(
-                        "SendCloud order %s shipments %s error:%s",
-                        error.get("external_order_id"),
-                        error.get("external_shipment_id"),
-                        str(error),
-                    )
-                    err_msg += _("Order %s (shipment %s) returned an error:\n") % (
-                        error.get("external_order_id"),
-                        error.get("external_shipment_id"),
-                    )
-                    err_msg += str(error) + "\n\n"
+                picking.sendcloud_last_cached = fields.Datetime.now()
+            elif status == "error":
+                error = confirmation.get("error")
+                _logger.info(
+                    "SendCloud order %s shipments %s error:%s",
+                    error.get("external_order_id"),
+                    error.get("external_shipment_id"),
+                    str(error),
+                )
+                err_msg += _("Order %s (shipment %s) returned an error:\n") % (
+                    error.get("external_order_id"),
+                    error.get("external_shipment_id"),
+                )
+                err_msg += str(error) + "\n\n"
         return err_msg
 
     def _get_exact_price_of_parcel(self, parcel):

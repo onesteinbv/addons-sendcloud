@@ -1,5 +1,5 @@
-# Copyright 2020 Onestein (<https://www.onestein.eu>)
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+# Copyright 2021 Onestein (<https://www.onestein.nl>)
+# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 from odoo import api, fields, models
 
@@ -29,6 +29,10 @@ class ResCompany(models.Model):
     )
 
     is_sendcloud_test_mode = fields.Boolean()
+    sendcloud_delivery_product_id = fields.Many2one(
+        "product.product",
+        domain="[('type', '=', 'service'), ('company_id', '=', company_id)]",
+    )
 
     @api.depends(
         "sendcloud_integration_ids.public_key",

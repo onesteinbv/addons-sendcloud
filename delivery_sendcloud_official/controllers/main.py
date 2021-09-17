@@ -1,5 +1,5 @@
-# Copyright 2020 Onestein (<https://www.onestein.eu>)
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+# Copyright 2021 Onestein (<https://www.onestein.nl>)
+# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 from contextlib import closing
 
@@ -75,7 +75,6 @@ class DeliverySendCloud(http.Controller):
                         lambda i: not i.public_key
                         and not i.secret_key
                         and not i.sendcloud_code
-                        and i.system == "odoo"
                     )
                     integration = fields.first(integrations)
                     _logger.info("SendCloud integration:%s", integration.id)

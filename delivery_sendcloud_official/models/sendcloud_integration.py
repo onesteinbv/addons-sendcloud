@@ -1,5 +1,5 @@
-# Copyright 2020 Onestein (<https://www.onestein.eu>)
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+# Copyright 2021 Onestein (<https://www.onestein.nl>)
+# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 from odoo import api, models, fields, _
 from odoo.tools.safe_eval import safe_eval
@@ -26,9 +26,6 @@ class SendCloudIntegration(models.Model):
     secret_key = fields.Char(readonly=False)
     sendcloud_code = fields.Integer(readonly=True)
     shop_url = fields.Char()
-    system = fields.Selection(
-        [("odoo", "Odoo"), ("api", "API")], required=True, readonly=True
-    )
     service_point_enabled = fields.Boolean()
     service_point_carriers = fields.Text(default="[]")
     service_point_carrier_ids = fields.Many2many(
@@ -72,7 +69,6 @@ class SendCloudIntegration(models.Model):
             "shop_name": integration.get("shop_name"),
             "sendcloud_code": integration.get("id"),
             "shop_url": integration.get("shop_url"),
-            "system": integration.get("system"),
             "service_point_enabled": integration.get("service_point_enabled"),
             "service_point_carriers": integration.get("service_point_carriers"),
             "webhook_active": integration.get("webhook_active"),
@@ -110,12 +106,6 @@ class SendCloudIntegration(models.Model):
 
         # Empty integrations
         empty_integrations = all_integrations.filtered(lambda c: not c.sendcloud_code)
-        empty_integrations_api = empty_integrations.filtered(
-            lambda c: c.system == "api"
-        )
-        empty_integrations_odoo = empty_integrations.filtered(
-            lambda c: c.system == "odoo"
-        )
 
         # Disabled integrations
         disabled_integrations = (
@@ -128,19 +118,11 @@ class SendCloudIntegration(models.Model):
         for integration in req_integrations:
             vals = self._prepare_sendcloud_integration_from_response(integration)
             vals["company_id"] = company.id
-            if integration.get("system") in ["odoo", "api"]:
-                if integration.get("id") in existing_integrations_map:
-                    existing_integrations_map[integration.get("id")].write(vals)
-                elif integration.get("system") == "api" and empty_integrations_api:
-                    empty_integrations_api.write(vals)
-                    company.set_onboarding_step_done(
-                        "sendcloud_onboarding_integration_state"
-                    )
-                elif integration.get("system") == "odoo" and empty_integrations_odoo:
-                    empty_integrations_odoo.write(vals)
-                elif integration.get("system") == "api":
-                    vals["company_id"] = company.id
-                    vals_list += [vals]
+            if integration.get("id") in existing_integrations_map:
+                existing_integrations_map[integration.get("id")].write(vals)
+            elif empty_integrations:
+                empty_integrations.write(vals)
+
         new_created_integrations = self.env["sendcloud.integration"]
         if vals_list and SENDCLOUD_GET_ALL_EXISTING_INTEGRATIONS:
             new_created_integrations = self.env["sendcloud.integration"].create(vals_list)

@@ -1,3 +1,3 @@
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 from . import test_delivery_sendcloud

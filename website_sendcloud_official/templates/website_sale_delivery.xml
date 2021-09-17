@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2021 Onestein (<https://www.onestein.nl>)
+     License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps). -->
+
 <odoo>
     <template id="payment_delivery_methods" inherit_id="website_sale_delivery.payment_delivery_methods">
         <xpath expr="//label[@t-field='delivery.name']" position="after">

@@ -1,5 +1,5 @@
-# Copyright 2020 Onestein (<https://www.onestein.eu>)
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+# Copyright 2021 Onestein (<https://www.onestein.nl>)
+# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 import json
 
@@ -30,6 +30,7 @@ class DeliveryCarrier(models.Model):
         "sendcloud.shipping.method.country",
         compute="_compute_sendcloud_country_ids",
         string="Price per Country",
+        readonly=False,
     )
     sendcloud_service_point_required = fields.Boolean(
         compute="_compute_sendcloud_service_point_required"
@@ -283,7 +284,7 @@ class DeliveryCarrier(models.Model):
             ],
             limit=1,
         )
-        return shipping_method_country.price
+        return shipping_method_country.price_custom
 
     @api.model
     def _get_default_sender_address_per_company(self, company_id):
@@ -306,7 +307,7 @@ class DeliveryCarrier(models.Model):
         }
 
     @api.model
-    def _prepare_sendcloud_shipping_method_set_product(self, vals):
+    def _prepare_sendcloud_shipping_method_set_product(self, vals, company):
         """
         This method sets a default delivery product on newly created SendCloud shipping methods.
         You should manually chance the delivery product on SendCloud shipping methods in
@@ -315,13 +316,16 @@ class DeliveryCarrier(models.Model):
         :param vals: dict of values to update
         :return: updated dict of values
         """
-        product = self.env.ref("delivery_sendcloud_official.sendcloud_product_delivery")
-        vals["product_id"] = product.id
+        if not company.sendcloud_delivery_product_id:
+            raise ValidationError(
+                _("The SendCloud delivery product is mandatory for this company.")
+            )
+        vals["product_id"] = company.sendcloud_delivery_product_id.id
         return vals
 
     @api.model
     def _sendcloud_create_update_shipping_methods(
-        self, shipping_methods, company_id, is_return=False
+        self, shipping_methods, company, is_return=False
     ):
         """ Sync all available shipping methods for a specific company,
          regardless of the sender address.
@@ -331,7 +335,7 @@ class DeliveryCarrier(models.Model):
         # All shipping methods
         domain = [
             ("delivery_type", "=", "sendcloud"),
-            ("company_id", "=", company_id),
+            ("company_id", "=", company.id),
             ("sendcloud_is_return", "=", is_return),
         ]
         all_shipping_methods = self.with_context(active_test=False).search(domain)
@@ -360,12 +364,12 @@ class DeliveryCarrier(models.Model):
         new_country_vals = []
         for method in shipping_methods:
             vals = self._prepare_sendcloud_shipping_method_from_response(method)
-            vals = self._prepare_sendcloud_shipping_method_set_product(vals)
+            vals = self._prepare_sendcloud_shipping_method_set_product(vals, company)
             vals["sendcloud_is_return"] = is_return
             if method.get("id") in existing_shipping_methods_map:
                 existing_shipping_methods_map[method.get("id")].write(vals)
             else:
-                vals["company_id"] = company_id
+                vals["company_id"] = company.id
                 new_shipping_methods_vals += [vals]
             for country in method.get("countries"):
                 new_country_vals.append(
@@ -378,14 +382,14 @@ class DeliveryCarrier(models.Model):
                         "price": country.get("price"),
                         "method_code": method.get("id"),
                         "sendcloud_is_return": is_return,
-                        "company_id": company_id,
+                        "company_id": company.id,
                     }
                 )
         new_created_shipping_methods = self.create(new_shipping_methods_vals)
         with self.env.norecompute():
             self.sudo().env["sendcloud.shipping.method.country"].search(
                 [
-                    ("company_id", "=", company_id),
+                    ("company_id", "=", company.id),
                     ("sendcloud_is_return", "=", is_return),
                 ]
             ).unlink()
@@ -411,18 +415,20 @@ class DeliveryCarrier(models.Model):
 
     @api.model
     def sendcloud_sync_shipping_method(self):
-        for company in self.env["res.company"].search([]):
+        for company in self.env["res.company"].search([
+            ("sendcloud_delivery_product_id", "!=", False)
+        ]):
             integration = company.sendcloud_default_integration_id
             if integration:
                 params = {"sender_address": "all"}
                 shipping_methods = integration.get_shipping_methods(params)
                 self._sendcloud_create_update_shipping_methods(
-                    shipping_methods, company.id
+                    shipping_methods, company
                 )
                 params = {"sender_address": "all", "is_return": True}
                 shipping_methods = integration.get_shipping_methods(params)
                 self._sendcloud_create_update_shipping_methods(
-                    shipping_methods, company.id, is_return=True
+                    shipping_methods, company, is_return=True
                 )
 
     def button_from_sendcloud_sync(self):

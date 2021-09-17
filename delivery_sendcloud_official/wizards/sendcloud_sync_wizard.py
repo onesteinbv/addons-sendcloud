@@ -1,5 +1,5 @@
-# Copyright 2020 Onestein (<https://www.onestein.eu>)
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+# Copyright 2021 Onestein (<https://www.onestein.nl>)
+# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 from odoo import fields, models, _
 from odoo.exceptions import UserError
@@ -19,6 +19,10 @@ class SendCloudSyncWizard(models.TransientModel):
 
     def button_sync(self):
         company = self.env.company
+        if not company.sendcloud_delivery_product_id:
+            raise UserError(
+                _("The SendCloud delivery product is mandatory for this company.")
+            )
         integration = company.sendcloud_default_integration_id
         if not integration:
             raise UserError(
