@@ -59,7 +59,7 @@ Go to SendCloud > Configuration > Wizards > Setup the SendCloud Integration. A w
 
 .. image:: /delivery_sendcloud_official/static/description/Image_10.png
 
-Select Odoo Integration. Confirm. You will be redirected to a SendCloud page asking you
+Select Odoo Integration. Start Setup. You will be redirected to a SendCloud page asking you
 to authorize OdooShop to access your Sendcloud account. Click on Connect in the SendCloud page.
 
 .. image:: /delivery_sendcloud_official/static/description/Image_20.png
@@ -81,27 +81,6 @@ Sendcloud as soon as you validate the salesorder. The “incoming order” has s
 When you validate the delivery in Odoo the label is created and the pick-up assignment is send to the carrier.
 
 .. image:: /delivery_sendcloud_official/static/description/Image_50.png
-
-
-API Integration
-~~~~~~~~~~~~~~~
-
-Go to SendCloud > Configuration > Wizards > Setup the SendCloud Integration. Click on Setup Integration. A wizard will pop up.
-
-Select API Integration.
-
-.. image:: /delivery_sendcloud_official/static/description/Image_60.png
-
-Enter the public and secret keys provided by SendCloud.
-Here is how to create api key in SendCloud:
-https://github.com/SendCloud/api-integration-example
-
-Confirm. An API integration is now present in the Integration list view.
-Open the API Integration form.
-Edit the API Integration. The changes you make will be in sync, SendCloud side, with the integration configuration.
-
-Please note that when using the Api integration a label is created in Sendcloud as soon as you validate the delivery. There is no "incoming order"
-created in the Sendcloud portal but directly a label.
 
 
 SendCloud panel settings
@@ -267,9 +246,7 @@ Known issues / Roadmap
 TODO
 ====
 
-- Enable different Shipping Methods for different Websites?
-- Are there shipping methods without weight limit?
-- are there delivery carriers with different from-country records?
+- Enable different Shipping Methods for different Websites
 
 Bug Tracker
 ===========
