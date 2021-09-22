@@ -82,6 +82,9 @@ When you validate the delivery in Odoo the label is created and the pick-up assi
 
 .. image:: /delivery_sendcloud_official/static/description/Image_50.png
 
+In previous version there was a possibility to connect to the API integration instead of the Odoo integration.
+To benefit from Sendcloud support we highly recommend you to upgrade to the latest version of this module with
+the Odoo integration.
 
 SendCloud panel settings
 ~~~~~~~~~~~~~~~~~~~~~~~~
