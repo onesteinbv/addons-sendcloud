@@ -43,6 +43,10 @@ class DeliveryCarrier(models.Model):
     sendcloud_integration_id = fields.Many2one(
         "sendcloud.integration", compute="_compute_sendcloud_integration_id"
     )
+    sendcloud_sync_countries = fields.Boolean(
+        string="Synchronize countries with Sendcloud",
+        default=True
+    )
 
     # -------- #
     # Computed #
@@ -257,7 +261,7 @@ class DeliveryCarrier(models.Model):
     # ----------------- #
 
     def _sendcloud_set_countries(self):
-        for record in self.filtered(lambda r: r.delivery_type == "sendcloud"):
+        for record in self.filtered(lambda r: r.delivery_type == "sendcloud" and r.sendcloud_sync_countries):
             record.country_ids = record._sendcloud_get_countries_from_cache()
 
     def _sendcloud_get_countries_from_cache(self):
