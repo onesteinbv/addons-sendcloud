@@ -6,12 +6,11 @@
     "summary": "Compute shipping costs and ship with SendCloud",
     "images": ["static/description/sendcloud_cover.jpeg"],
     "category": "Operations/Inventory/Delivery",
-    "version": "14.0.1.1.0",
+    "version": "15.0.1.0.0",
     "author": "Onestein",
     "license": "OPL-1",
     "depends": ["delivery", "base_address_extended"],
     "data": [
-        "templates/assets.xml",
         "security/ir.model.access.csv",
         "security/sendcloud_security_rule.xml",
         "data/delivery_sendcloud_data.xml",
@@ -42,6 +41,20 @@
         "views/sendcloud_shipping_method_country_view.xml",
         "views/menu.xml",
     ],
-    "qweb": ["static/src/xml/backend_service_point.xml"],
+    "assets": {
+        "web.assets_common": [
+            "delivery_sendcloud_official/static/src/lib/sendcloud/api.min.js",
+            "delivery_sendcloud_official/static/src/js/common.js"
+        ],
+        "web.assets_backend": [
+            "delivery_sendcloud_official/static/src/js/backend.js",
+            "delivery_sendcloud_official/static/src/js/widget.js",
+            "delivery_sendcloud_official/static/src/scss/backend.scss",
+            "delivery_sendcloud_official/static/src/scss/widget.scss"
+        ],
+        "web.assets_qweb": [
+            "delivery_sendcloud_official/static/src/xml/backend_service_point.xml",
+        ]
+    },
     "application": True,
 }

@@ -25,6 +25,7 @@ class DeliverySendCloud(http.Controller):
         payload_data = request.jsonrequest
         _logger.info("SendCloud payload_data:%s", str(payload_data))
         with closing(odoo.sql_db.db_connect(db).cursor()) as cr:
+            cr.transaction = odoo.api.Transaction(api.Registry(db))
             env = api.Environment(cr, SUPERUSER_ID, {})
             integration = self._verify_sendcloud_authentic(
                 env, payload_data, company_id
