@@ -38,6 +38,12 @@
                     </field>
                 </page>
             </xpath>
+            <xpath expr="//field[@name='country_ids']" position="after">
+                <field
+                    name="sendcloud_sync_countries"
+                    attrs="{'invisible': [('delivery_type', '!=', 'sendcloud')]}"
+                />
+            </xpath>
         </field>
     </record>
 
