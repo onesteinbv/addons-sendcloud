@@ -25,7 +25,7 @@ class SaleOrder(models.Model):
             "sendcloud_details": {
                 "order_id": self.id,
                 "key": carrier.sendcloud_integration_id.public_key or "",
-                "country_code": self.partner_id.country_id.code or "",
+                "country_code": self.partner_shipping_id.country_id.code or "",
                 "postcode": self.partner_id.zip or "",
                 "carrier_name": [carrier.sendcloud_carrier or ""],
             }

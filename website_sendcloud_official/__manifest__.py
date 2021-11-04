@@ -6,7 +6,7 @@
     "summary": "Integrate your web shop with SendCloud",
     "images": ["static/description/sendcloud_cover.jpeg"],
     "category": "Website/Website",
-    "version": "14.0.1.0.0",
+    "version": "14.0.1.0.1",
     "author": "Onestein",
     "license": "OPL-1",
     "depends": ["website_sale_delivery", "delivery_sendcloud_official"],
