@@ -147,6 +147,8 @@ class StockPicking(models.Model):
             vals.update({"telephone": sender.mobile or sender.phone})
         if sender.email:
             vals.update({"email": sender.email})
+        elif sender.parent_id and sender.parent_id.email:
+            vals.update({"email": sender.parent_id.email})
         vals.update({"to_post_number": service_point_data.get("postal_code", "")})
         if not warehouse.sencloud_sender_address_id:
             sender_address = self.env[
