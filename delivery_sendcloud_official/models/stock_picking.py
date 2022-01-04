@@ -104,7 +104,7 @@ class StockPicking(models.Model):
             {
                 "name": sender.name,
                 "address": sender.street_name,
-                "house_number": sender.street_number,
+                "house_number": sender.street_number or "",
                 "city": sender.city,
                 "postal_code": sender.zip,
                 "country": sender.country_id.code or "",
