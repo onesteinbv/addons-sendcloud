@@ -115,11 +115,12 @@ class StockPicking(models.Model):
             vals["house_number"] = number_door
 
         # Recipient address details (mandatory when shipping outside of EU)
+        out_invoices = order.invoice_ids.filtered(lambda i: i.move_type == "out_invoice" and i.state == "posted")
         vals.update(
             {
                 "country_state": sender.state_id.code or "",
-                "customs_invoice_nr": ",".join(order.invoice_ids.mapped("name"))
-                if order.invoice_ids
+                "customs_invoice_nr": out_invoices[-1].name
+                if out_invoices
                 else "",  # TODO if not order.invoice_ids, sendcloud server returns "This field is required."
                 "customs_shipment_type": int(self.sendcloud_customs_shipment_type)
                 if self.sendcloud_customs_shipment_type
