@@ -272,7 +272,7 @@ class StockPicking(models.Model):
 
         # Parcel items (mandatory)
         line_vals = {
-            "description": move.description_picking or move.name,
+            "description": move.product_id.display_name,
             "quantity": int(move.product_uom_qty),  # TODO should be quantity_done ?
             "weight": weight,
             "value": move.sale_line_id.price_unit,
