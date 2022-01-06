@@ -34,7 +34,7 @@ class SendCloudReturn(models.Model):
     items_cost = fields.Float()
     delivered_at = fields.Char()
     delivery_option = fields.Selection(
-        [("drop_off_point", "Drop Off Point"), ("in_store", "In Store")]
+        [("drop_off_point", "Drop-Off Point"), ("in_store", "In Store"), ("drop_off_labelless", "Labelless Drop Off")]
     )
 
     outgoing_parcel_tracking_url = fields.Char()

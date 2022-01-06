@@ -6,7 +6,7 @@
     "summary": "Compute shipping costs and ship with SendCloud",
     "images": ["static/description/sendcloud_cover.jpeg"],
     "category": "Operations/Inventory/Delivery",
-    "version": "14.0.1.1.3",
+    "version": "14.0.1.1.4",
     "author": "Onestein",
     "license": "OPL-1",
     "depends": ["delivery", "base_address_extended"],
