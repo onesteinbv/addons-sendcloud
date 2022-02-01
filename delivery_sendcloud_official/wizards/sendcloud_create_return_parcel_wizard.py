@@ -30,7 +30,7 @@ class SendCloudCreateReturnParcelWizardDeliveryOption(models.TransientModel):
     _description = "SendCloud Create Return Parcel Wizard Delivery Option"
 
     code = fields.Selection(
-        [("drop_off_point", "Drop-off Point"), ("in_store", "In Store")], required=True
+        [("drop_off_point", "Drop-off Point"), ("in_store", "In Store"), ("drop_off_labelless", "Labelless Drop Off")], required=True
     )
     name = fields.Char(compute="_compute_name", store=True)
     wizard_id = fields.Many2one("sendcloud.create.return.parcel.wizard")
@@ -40,6 +40,7 @@ class SendCloudCreateReturnParcelWizardDeliveryOption(models.TransientModel):
         display_name_map = {
             "drop_off_point": _("Drop-off Point"),
             "in_store": _("In Store"),
+            "drop_off_labelless": _("Labelless Drop Off")
         }
         for wizard in self:
             wizard.name = display_name_map[wizard.code]
@@ -63,7 +64,7 @@ class SendCloudCreateReturnParcelWizardReason(models.TransientModel):
     _description = "SendCloud Create Return Parcel Wizard Reason"
 
     name = fields.Char(required=True)
-    code = fields.Char(required=True)
+    code = fields.Integer(required=True)
     wizard_id = fields.Many2one("sendcloud.create.return.parcel.wizard")
 
 
@@ -75,8 +76,8 @@ class SendCloudCreateReturnParcelWizardLine(models.TransientModel):
     sendcloud_code = fields.Char(required=True)
     quantity = fields.Integer(required=True)
     price = fields.Float()
-    return_reason = fields.Integer(default=3)
-    return_message = fields.Text()
+    return_reason = fields.Integer(default=3)  # TODO: Use this field to override wizard value
+    return_message = fields.Text()  # TODO: Use this field to override wizard value
     wizard_id = fields.Many2one("sendcloud.create.return.parcel.wizard")
 
 
@@ -174,6 +175,7 @@ class SendCloudCreateReturnParcelWizard(models.TransientModel):
         "sendcloud.create.return.parcel.wizard.reason",
         domain="[('id', 'in', reason_ids)]",
     )
+    reason_message = fields.Text()
 
     # Delivery Options
     delivery_options = fields.Text(default="[]", string="Delivery Options Cached")
@@ -396,10 +398,13 @@ class SendCloudCreateReturnParcelWizard(models.TransientModel):
                 "product_id": str(line.sendcloud_code),  # TODO is it correct?
                 "quantity": line.quantity,
                 "description": line.name,
-                "value": str(line.price),
-                "return_reason": line.return_reason,
-                "return_message": line.return_message,
+                "value": str(line.price)
             }
+            if self.reason_id:
+                product_vals["return_reason"] = self.reason_id.code
+            if self.reason_message:
+                product_vals["return_message"] = self.reason_message
+
             products.append(product_vals)
         payload.update({"products": products})
         payload.update(
