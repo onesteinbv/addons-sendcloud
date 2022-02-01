@@ -39,12 +39,12 @@ class SendCloudRequest(models.AbstractModel):
         try:
             if type_request == "POST":
                 resp = requests.post(
-                    url=url, json=data, auth=auth, headers=headers, timeout=30
+                    url=url, json=data, auth=auth, headers=headers
                 )
             elif type_request == "GET":
-                resp = requests.get(url=url, params=data, auth=auth, timeout=30)
+                resp = requests.get(url=url, params=data, auth=auth)
             elif type_request == "PUT":
-                resp = requests.put(url=url, json=data, auth=auth, timeout=30)
+                resp = requests.put(url=url, json=data, auth=auth)
         except requests.ConnectionError:
             raise UserError(_("SendCloud: server not reachable, try again later"))
         except requests.Timeout:

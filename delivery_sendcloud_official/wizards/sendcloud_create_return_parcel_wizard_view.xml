@@ -39,13 +39,11 @@
                         <field name="service_point" widget="sendcloud_service_point_selector"/>
                         <field name="collo_count"/>
                     </group>
-                    <field name="line_ids" editable="bottom" create="false" delete="false">
-                        <tree>
+                    <field name="line_ids">
+                        <tree editable="bottom" create="false" delete="false">
                             <field name="name"/>
                             <field name="quantity"/>
                             <field name="price"/>
-                            <field name="return_reason"/>
-                            <field name="return_message"/>
                         </tree>
                     </field>
                     <field name="refund_option_ids" invisible="1">
@@ -68,6 +66,7 @@
                     </field>
                     <group>
                         <field name="reason_id" options="{'no_create_edit': True, 'no_create': True, 'no_open': True}"/>
+                        <field name="reason_message" />
                     </group>
                     <field name="return_location_ids" invisible="1">
                         <tree>
