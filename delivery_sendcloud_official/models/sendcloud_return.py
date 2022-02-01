@@ -76,7 +76,7 @@ class SendCloudReturn(models.Model):
 
     @api.model
     def _prepare_sendcloud_return_from_response(self, record_data):
-        return {
+        res = {
             "sendcloud_code": record_data.get("id"),
             "return_response_cache": record_data,
             "email": record_data.get("email"),
@@ -86,12 +86,6 @@ class SendCloudReturn(models.Model):
             "reason": record_data.get("reason"),
             "message": record_data.get("message"),
             "status": record_data.get("status"),
-            "refund_type": record_data.get("refund", {})
-            .get("refund_type", {})
-            .get("code"),
-            "total_refund": record_data.get("refund", {}).get("total_refund"),
-            "refunded_at": record_data.get("refund", {}).get("refunded_at"),
-            "refund_message": record_data.get("refund", {}).get("message"),
             "status_display": record_data.get("status_display"),
             "is_cancellable": record_data.get("is_cancellable"),
             "label_cost": record_data.get("label_cost"),
@@ -156,6 +150,17 @@ class SendCloudReturn(models.Model):
                 "incoming_parcel_status", {}
             ).get("global_status_slug"),
         }
+
+        refund = record_data.get("refund")
+        if refund:
+            res.update({
+                "refund_type": refund["refund_type"]["code"],
+                "total_refund": refund["total_refund"],
+                "refunded_at": refund["refunded_at"],
+                "refund_message": refund["message"],
+            })
+
+        return res
 
     @api.model
     def sendcloud_create_or_update_returns(self, return_data, company):
