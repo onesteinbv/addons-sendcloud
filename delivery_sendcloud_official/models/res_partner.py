@@ -7,4 +7,7 @@ from odoo import fields, models
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    sencloud_sender_address_id = fields.Many2one("sendcloud.sender.address")
+    sencloud_sender_address_id = fields.Many2one(
+        comodel_name="sendcloud.sender.address",
+        string="Sendcloud Sender Address"
+    )
