@@ -8,7 +8,7 @@
         <field name="inherit_id" ref="delivery.view_partner_property_form" />
         <field name="arch" type="xml">
             <field name="property_delivery_carrier_id" position="after">
-                <field name="sencloud_sender_address_id"/>
+                <field name="sencloud_sender_address_id" invisible="1"/>
             </field>
         </field>
     </record>
