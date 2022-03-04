@@ -6,13 +6,13 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import UserError
 
 
-# Whether you want to pull all the existing integrations from SendCloud.
+# Whether you want to pull all the existing integrations from Sendcloud.
 SENDCLOUD_GET_ALL_EXISTING_INTEGRATIONS = False
 
 
-class SendCloudIntegration(models.Model):
+class SendcloudIntegration(models.Model):
     _name = "sendcloud.integration"
-    _description = "SendCloud Integrations"
+    _description = "Sendcloud Integrations"
     _inherit = "sendcloud.request"
     _rec_name = "shop_name"
     _order = "sequence, id"
@@ -184,7 +184,7 @@ class SendCloudIntegration(models.Model):
         for record in self:
             formatted_vals = record._prepare_sendcloud_integration_from_record(vals)
             updated_vals = record._update_in_sendcloud(formatted_vals)
-            super(SendCloudIntegration, record).write(updated_vals)
+            super(SendcloudIntegration, record).write(updated_vals)
         return self
 
     def _prepare_sendcloud_integration_from_record(self, vals):
@@ -197,7 +197,7 @@ class SendCloudIntegration(models.Model):
         if vals.get("service_point_enabled") and not safe_eval(
             vals.get("service_point_carriers")
         ):
-            raise UserError(_("SendCloud: select at least one service point carrier"))
+            raise UserError(_("Sendcloud: select at least one service point carrier"))
         if "service_point_carriers" in vals and isinstance(
             vals["service_point_carriers"], str
         ):

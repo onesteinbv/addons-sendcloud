@@ -2,8 +2,8 @@
 # License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 {
-    "name": "SendCloud eCommerce",
-    "summary": "Integrate your web shop with SendCloud",
+    "name": "Sendcloud eCommerce",
+    "summary": "Integrate your web shop with Sendcloud",
     "images": ["static/description/sendcloud_cover.jpeg"],
     "category": "Website/Website",
     "version": "15.0.1.0.0",

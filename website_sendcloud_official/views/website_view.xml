@@ -10,7 +10,7 @@
 <!--        <field name="arch" type="xml">-->
 <!--            <sheet>-->
 <!--                <div name="sendcloud">-->
-<!--                    <group name="sendcloud" string="SendCloud">-->
+<!--                    <group name="sendcloud" string="Sendcloud">-->
 <!--                        <button name="sendcloud_update_shipping_methods" icon="fa-arrow-right" type="object" string="Update Shipping Methods" class="btn-link"/>-->
 <!--                    </group>-->
 <!--                </div>-->

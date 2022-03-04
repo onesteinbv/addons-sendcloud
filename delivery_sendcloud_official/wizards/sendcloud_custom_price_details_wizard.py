@@ -4,9 +4,9 @@
 from odoo import fields, models
 
 
-class SendCloudCustomPriceDetailsWizard(models.TransientModel):
+class SendcloudCustomPriceDetailsWizard(models.TransientModel):
     _name = "sendcloud.custom.price.details.wizard"
-    _description = "SendCloud Custom Price Details Wizard"
+    _description = "Sendcloud Custom Price Details Wizard"
 
     shipping_method_country_id = fields.Many2one(
         "sendcloud.shipping.method.country",

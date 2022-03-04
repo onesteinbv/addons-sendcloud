@@ -5,9 +5,9 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
-class SendCloudWarehouseAddressWizard(models.TransientModel):
+class SendcloudWarehouseAddressWizard(models.TransientModel):
     _name = "sendcloud.warehouse.address.wizard"
-    _description = "SendCloud Warehouse Address Wizard"
+    _description = "Sendcloud Warehouse Address Wizard"
 
     def _default_warehouse_ids(self):
         warehouses = self.env["stock.warehouse"].search(
@@ -54,7 +54,7 @@ class SendCloudWarehouseAddressWizard(models.TransientModel):
             raise ValidationError(_("Inconsistent countries:") + err_msg)
 
 
-class SendCloudChangeWarehouseAddressWizard(models.TransientModel):
+class SendcloudChangeWarehouseAddressWizard(models.TransientModel):
     _name = "sendcloud.change.warehouse.address.wizard"
     _description = "Warehouse, Change Address Wizard"
 

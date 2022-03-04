@@ -84,7 +84,7 @@ class StockPicking(models.Model):
         service_point_data = {}
         if self.sendcloud_service_point_required:
             if not self.sendcloud_service_point_address:
-                raise ValidationError(_("SendCloud Service Point is Required!"))
+                raise ValidationError(_("Sendcloud Service Point is Required!"))
 
             service_point_data = json.loads(self.sendcloud_service_point_address)
 
@@ -375,7 +375,7 @@ class StockPicking(models.Model):
         if min_weight and max_weight and not (min_weight <= weight <= max_weight):
             raise ValidationError(
                 _(
-                    "SendCloud shipping method not compatible with selected packaging.\n"
+                    "Sendcloud shipping method not compatible with selected packaging.\n"
                     "Please select a shipping method such that the collis' weights are between Min Weight and Max Weight."
                 )
             )
@@ -403,7 +403,7 @@ class StockPicking(models.Model):
             }
         return {
             "type": "ir.actions.act_window",
-            "name": _("SendCloud Parcels"),
+            "name": _("Sendcloud Parcels"),
             "res_model": "sendcloud.parcel",
             "domain": [("id", "in", self.sendcloud_parcel_ids.ids)],
             "view_mode": "tree,form",
@@ -476,7 +476,7 @@ class StockPicking(models.Model):
                 if response.get("error"):
                     picking_id = vals.get("external_shipment_id") or vals.get("shipment_uuid")
                     _logger.error(
-                        "SendCloud deleting picking %s error: %s",
+                        "Sendcloud deleting picking %s error: %s",
                         picking_id,
                         response.get("error").get("message"),
                     )
@@ -541,7 +541,7 @@ class StockPicking(models.Model):
         response = integration.create_parcels(request_data)
         if response.get("error"):
             err_msg = response.get("error").get("message")
-            raise UserError(_("SendCloud: %s") % err_msg)
+            raise UserError(_("Sendcloud: %s") % err_msg)
         if response.get("failed_parcels"):
             err_msg = ""
             for failed in response.get("failed_parcels"):
@@ -549,7 +549,7 @@ class StockPicking(models.Model):
                     str(failed.get("parcel")),
                     str(failed.get("errors")),
                 )
-            raise UserError(_("SendCloud: %s") % err_msg)
+            raise UserError(_("Sendcloud: %s") % err_msg)
         return response["parcels"]
 
     def _sync_picking_to_sendcloud(self):
@@ -596,7 +596,7 @@ class StockPicking(models.Model):
         return res
 
     def _sync_shipment_to_sendcloud(self, err_msg, integration, vals):
-        _logger.info("SendCloud create_shipments:%s", integration.sendcloud_code)
+        _logger.info("Sendcloud create_shipments:%s", integration.sendcloud_code)
         response = integration.create_shipments(integration.sendcloud_code, vals)
         for confirmation in response:
             status = confirmation.get("status")
@@ -628,7 +628,7 @@ class StockPicking(models.Model):
             elif status == "error":
                 error = confirmation.get("error")
                 _logger.info(
-                    "SendCloud order %s shipments %s error:%s",
+                    "Sendcloud order %s shipments %s error:%s",
                     error.get("external_order_id"),
                     error.get("external_shipment_id"),
                     str(error),
@@ -707,14 +707,14 @@ class StockPicking(models.Model):
             carrier = record.carrier_id
             if carrier.sendcloud_service_point_input == "required":
                 if not record.sendcloud_service_point_address:
-                    raise ValidationError(_("SendCloud Service Point is required."))
+                    raise ValidationError(_("Sendcloud Service Point is required."))
 
                 if (
                     carrier.sendcloud_integration_id
                     and not carrier.sendcloud_integration_id.service_point_enabled
                 ):
                     raise ValidationError(
-                        _("SendCloud Service Point not enabled for this integration.")
+                        _("Sendcloud Service Point not enabled for this integration.")
                     )
 
                 carrier_names = carrier.sendcloud_integration_id.service_point_carriers
@@ -725,5 +725,5 @@ class StockPicking(models.Model):
                     or []
                 ):
                     raise ValidationError(
-                        _("SendCloud Carrier not enabled for this integration.")
+                        _("Sendcloud Carrier not enabled for this integration.")
                     )

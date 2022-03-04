@@ -8,7 +8,7 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <page name="other_information" position="after">
-                <page string="SendCloud" name="sendcloud_sale" attrs="{'invisible':[('is_sendcloud_delivery_type','!=',True)]}">
+                <page string="Sendcloud" name="sendcloud_sale" attrs="{'invisible':[('is_sendcloud_delivery_type','!=',True)]}">
                     <group>
                         <group name="sendcloud_sale">
                             <field name="sendcloud_customs_shipment_type" string="Customs Shipment Type"/>
@@ -25,8 +25,8 @@
                     </group>
                     <field name="is_sendcloud_test_mode" invisible="1"/>
                     <group name="testing" string="Only for Testing" attrs="{'invisible': [('is_sendcloud_test_mode', '=', False)]}">
-                        <button name="button_to_sendcloud_sync" type="object" string="Sync To SendCloud"/>
-                        <button name="button_delete_sendcloud_order" type="object" string="Delete From SendCloud"/>
+                        <button name="button_to_sendcloud_sync" type="object" string="Sync To Sendcloud"/>
+                        <button name="button_delete_sendcloud_order" type="object" string="Delete From Sendcloud"/>
                     </group>
                 </page>
             </page>
@@ -50,7 +50,7 @@
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='my_quotation']" position="after">
                 <separator/>
-                <filter string="SendCloud" name="is_sendcloud" domain="[('is_sendcloud_delivery_type', '=', True)]"/>
+                <filter string="Sendcloud" name="is_sendcloud" domain="[('is_sendcloud_delivery_type', '=', True)]"/>
             </xpath>
         </field>
     </record>
@@ -70,7 +70,7 @@
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='my_sale_orders_filter']" position="after">
                 <separator/>
-                <filter string="SendCloud" name="is_sendcloud" domain="[('is_sendcloud_delivery_type', '=', True)]"/>
+                <filter string="Sendcloud" name="is_sendcloud" domain="[('is_sendcloud_delivery_type', '=', True)]"/>
             </xpath>
         </field>
     </record>

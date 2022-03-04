@@ -5,9 +5,9 @@ from odoo import fields, models, _
 from odoo.exceptions import UserError
 
 
-class SendCloudSyncWizard(models.TransientModel):
+class SendcloudSyncWizard(models.TransientModel):
     _name = "sendcloud.sync.wizard"
-    _description = "SendCloud Sync Wizard"
+    _description = "Sendcloud Sync Wizard"
 
     brands = fields.Boolean(default=True)
     returns = fields.Boolean(default=True)
@@ -22,7 +22,7 @@ class SendCloudSyncWizard(models.TransientModel):
         integration = company.sendcloud_default_integration_id
         if not integration:
             raise UserError(
-                _("No SendCloud integrations found. Setup an integration first.")
+                _("No Sendcloud integrations found. Setup an integration first.")
             )
 
         if self.brands:

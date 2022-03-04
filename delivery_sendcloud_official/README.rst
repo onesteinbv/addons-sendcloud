@@ -1,5 +1,5 @@
 ==================
-SendCloud Shipping
+Sendcloud Shipping
 ==================
 
 .. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -7,9 +7,9 @@ SendCloud Shipping
    !! changes will be overwritten.                   !!
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-This module is part of the SendCloud official connector for Odoo.
+This module is part of the Sendcloud official connector for Odoo.
 
-At the moment, the SendCloud official connector for Odoo consists of two modules: delivery_sendcloud_official and website_sendcloud_official.
+At the moment, the Sendcloud official connector for Odoo consists of two modules: delivery_sendcloud_official and website_sendcloud_official.
 
 1) delivery_sendcloud_official. This module works for the backend.
 2) website_sendcloud_official. This module is for the frontend (webshop) and it depends on delivery_sendcloud_official.
@@ -55,18 +55,18 @@ Odoo Integration
 Verify that the value of "web.base.url" parameter in System Parameters is set with
 the correct url (eg.: "https://demo.onestein.eu" instead of "http://localhost:8069").
 
-Go to SendCloud > Configuration > Wizards > Setup the SendCloud Integration. A wizard will pop up.
+Go to Sendcloud > Configuration > Wizards > Setup the Sendcloud Integration. A wizard will pop up.
 
 .. image:: /delivery_sendcloud_official/static/description/Image_10.png
 
-Select Odoo Integration. Start Setup. You will be redirected to a SendCloud page asking you
-to authorize OdooShop to access your Sendcloud account. Click on Connect in the SendCloud page.
+Select Odoo Integration. Start Setup. You will be redirected to a Sendcloud page asking you
+to authorize OdooShop to access your Sendcloud account. Click on Connect in the Sendcloud page.
 
 .. image:: /delivery_sendcloud_official/static/description/Image_20.png
 
 Go back to the Odoo Integration configuration. An integration "OdooShop" is now present
 in the Integration list view. Open the OdooShop Integration form. Edit the OdooShop Integration.
-The changes you make will be in sync, SendCloud side, with the integration configuration.
+The changes you make will be in sync, Sendcloud side, with the integration configuration.
 
 .. image:: /delivery_sendcloud_official/static/description/Image_30.png
 
@@ -86,39 +86,39 @@ In previous version there was a possibility to connect to the API integration in
 To benefit from Sendcloud support we highly recommend you to upgrade to the latest version of this module with
 the Odoo integration.
 
-SendCloud panel settings
+Sendcloud panel settings
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-When you configure the Integration settings in the online SendCloud panel (https://panel.sendcloud.sc/)
+When you configure the Integration settings in the online Sendcloud panel (https://panel.sendcloud.sc/)
 those settings are also sync-ed with the Integration settings Odoo side.
 
 
-Synchronize SendCloud objects
+Synchronize Sendcloud objects
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-After the setup of the integration with SendCloud server is completed, second step is
-to synchronize the objects present in SendCloud server to Odoo.
-To synchronize SendCloud objects for the first time:
+After the setup of the integration with Sendcloud server is completed, second step is
+to synchronize the objects present in Sendcloud server to Odoo.
+To synchronize Sendcloud objects for the first time:
 
-- Go to SendCloud > Configuration > Wizards > Sync the SendCloud Objects. A wizard will pop up.
+- Go to Sendcloud > Configuration > Wizards > Sync the Sendcloud Objects. A wizard will pop up.
 
 .. image:: /delivery_sendcloud_official/static/description/Image_70.png
 
-- Select all the objects. Confirm. This will retrieve the required data from SendCloud server.
+- Select all the objects. Confirm. This will retrieve the required data from Sendcloud server.
 
 .. image:: /delivery_sendcloud_official/static/description/Image_80.png
 
-Some SendCloud objects will be automatically synchronized from the SendCloud server to Odoo.
-Those SendCloud objects are:
+Some Sendcloud objects will be automatically synchronized from the Sendcloud server to Odoo.
+Those Sendcloud objects are:
 
 - Parcel Statuses
 - Invoices
 - Shipping Methods
 - Sender Addresses
 
-To configure how often those objects should be retrieved from the SendCloud server:
+To configure how often those objects should be retrieved from the Sendcloud server:
 
-- Go to Settings > Technical > Automation > Scheduled Actions. Search Scheduled Actions for "SendCloud".
+- Go to Settings > Technical > Automation > Scheduled Actions. Search Scheduled Actions for "Sendcloud".
 
 .. image:: /delivery_sendcloud_official/static/description/Image_90.png
 
@@ -130,7 +130,7 @@ Sender Addresses and Warehouses
 
 In case of multiple warehouses configured in Odoo (eg.: user belongs to group "Manage multiple Warehouse"):
 
-Go to SendCloud > Configuration > Integration. Click on Configure Warehouse Addresses. A wizard will pop up.
+Go to Sendcloud > Configuration > Integration. Click on Configure Warehouse Addresses. A wizard will pop up.
 Set the corresponding Sendcloud Sender Address for each of the warehouse addresses.
 
 .. image:: /delivery_sendcloud_official/static/description/Image_100.png
@@ -145,9 +145,9 @@ Initial sync of past orders
 
 Once all the previous configuration steps are completed, it is possible to synchronize
 all the past Odoo outgoing shipments to Sendcloud.
-Those shipments are the ones already setup with a SendCloud shipping method.
+Those shipments are the ones already setup with a Sendcloud shipping method.
 
-Go to SendCloud > Configuration > Wizards > Sync past orders to SendCloud. A wizard will pop up.
+Go to Sendcloud > Configuration > Wizards > Sync past orders to Sendcloud. A wizard will pop up.
 Select the date (by default set to 30 days back from today) from which the shipments
 must be synchronized.
 
@@ -157,7 +157,7 @@ They will contain a status “Ready to Process” if they are ready to generate 
 Test Mode
 ~~~~~~~~~
 
-To enable the Test Mode, go to the "General Settings": under the SendCloud section you can find the "Enable Test Mode" flag.
+To enable the Test Mode, go to the "General Settings": under the Sendcloud section you can find the "Enable Test Mode" flag.
 Enabling the Test Mode allows you to access extra functionalities that are useful to test the connector.
 
 There is no seperate test environment available on the Sendcloud portal. This means that
@@ -187,7 +187,7 @@ Quickstart
 
 In short this is how the module works:
 
-- the user creates a sale order in Odoo; the user clicks on "Add shipping" button and selects one of the shipping methods provided by SendCloud
+- the user creates a sale order in Odoo; the user clicks on "Add shipping" button and selects one of the shipping methods provided by Sendcloud
 - when confirming the sale order, a delivery document is generated (stock.picking)
 - when confirming the picking, a parcel (or multiple parcels) for the specific sales order are created in Sendcloud under Shipping > Created labels
 - the picking is updated with the information from Sendcloud (tracking number, tracking url, label etc...)
@@ -196,7 +196,7 @@ Map of Sendcloud-Odoo data models
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 +-----------------+-------------------+
-| SendCloud       | Odoo              |
+| Sendcloud       | Odoo              |
 +=================+===================+
 | Integration     |                   |
 +-----------------+-------------------+
@@ -224,9 +224,9 @@ Service Point Picker
 ~~~~~~~~~~~~~~~~~~~~
 
 The module contains a widget, the Service Point Picker, that allows the selection of the service point.
-The widget is placed in the "SendCloud Shipping" tab of the picking. The widget is visible in case the following is true:
+The widget is placed in the "Sendcloud Shipping" tab of the picking. The widget is visible in case the following is true:
 
- - the configuration in the SendCloud panel has the Service Point flag to True (in the SendCloud integration config)
+ - the configuration in the Sendcloud panel has the Service Point flag to True (in the Sendcloud integration config)
  - the Shipping Method selected in the picking is provided by Sendcloud
  - the Shipping Method has field sendcloud_service_point_input == "required"
  - all the criteria (from country, to country, weight) match with the current order
@@ -240,7 +240,7 @@ When canceling parcels a confirmation popup will ask for confirmation.
 Troubleshooting
 ~~~~~~~~~~~~~~~
 
-If the communication to the SendCloud server fails (eg.: while creating a parcel),
+If the communication to the Sendcloud server fails (eg.: while creating a parcel),
 the exchanged message is stored in a Log section, under Logging > Actions.
 
 Known issues / Roadmap

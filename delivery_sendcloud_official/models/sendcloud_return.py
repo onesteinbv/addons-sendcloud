@@ -4,9 +4,9 @@
 from odoo import api, models, fields
 
 
-class SendCloudReturn(models.Model):
+class SendcloudReturn(models.Model):
     _name = "sendcloud.return"
-    _description = "SendCloud Return"
+    _description = "Sendcloud Return"
     _rec_name = "sendcloud_code"
 
     return_response_cache = fields.Text(default="{}")

@@ -4,7 +4,7 @@
 from odoo import api, models
 
 
-class SendCloudParcel(models.Model):
+class SendcloudParcel(models.Model):
     _inherit = "sendcloud.parcel"
 
     @api.depends("company_id")

@@ -7,9 +7,9 @@ from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 
 
-class SendCloudParcelStatus(models.Model):
+class SendcloudParcelStatus(models.Model):
     _name = "sendcloud.parcel.status"
-    _description = "SendCloud Parcel Statuses"
+    _description = "Sendcloud Parcel Statuses"
     _rec_name = "message"
 
     message = fields.Char(required=True)

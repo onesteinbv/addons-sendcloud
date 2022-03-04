@@ -9,19 +9,19 @@ class ResCompany(models.Model):
     _inherit = ["res.company", "sendcloud.onboarding.mixin"]
 
     sendcloud_integration_ids = fields.One2many(
-        "sendcloud.integration", "company_id", string="SendCloud Integrations"
+        "sendcloud.integration", "company_id", string="Sendcloud Integrations"
     )
     sendcloud_brand_ids = fields.One2many(
-        "sendcloud.brand", "company_id", string="SendCloud Brands"
+        "sendcloud.brand", "company_id", string="Sendcloud Brands"
     )
     sendcloud_return_ids = fields.One2many(
-        "sendcloud.return", "company_id", string="SendCloud Returns"
+        "sendcloud.return", "company_id", string="Sendcloud Returns"
     )
     sendcloud_invoice_ids = fields.One2many(
-        "sendcloud.invoice", "company_id", string="SendCloud Invoices"
+        "sendcloud.invoice", "company_id", string="Sendcloud Invoices"
     )
     sendcloud_sender_address_ids = fields.One2many(
-        "sendcloud.sender.address", "company_id", string="SendCloud Sender Addresses"
+        "sendcloud.sender.address", "company_id", string="Sendcloud Sender Addresses"
     )
 
     sendcloud_default_integration_id = fields.Many2one(

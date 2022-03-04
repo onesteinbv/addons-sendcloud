@@ -6,7 +6,7 @@ import base64
 from odoo import api, models, fields, _
 
 
-class SendCloudParcel(models.Model):
+class SendcloudParcel(models.Model):
     _inherit = "sendcloud.parcel"
 
     def _generate_parcel_labels(self):

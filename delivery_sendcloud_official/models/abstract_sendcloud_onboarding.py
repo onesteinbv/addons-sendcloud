@@ -6,7 +6,7 @@ from odoo import api, fields, models
 
 class SendcloudOnboardingMixin(models.AbstractModel):
     _name = "sendcloud.onboarding.mixin"
-    _description = "SendCloud Onboarding Mixin Abstract"
+    _description = "Sendcloud Onboarding Mixin Abstract"
 
     sendcloud_onboarding_state = fields.Selection(
         [
@@ -15,7 +15,7 @@ class SendcloudOnboardingMixin(models.AbstractModel):
             ("done", "Done"),
             ("closed", "Closed"),
         ],
-        string="State of the SendCloud onboarding panel",
+        string="State of the Sendcloud onboarding panel",
         default="not_done",
     )
     sendcloud_onboarding_integration_state = fields.Selection(

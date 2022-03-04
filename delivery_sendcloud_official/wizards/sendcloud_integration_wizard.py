@@ -7,9 +7,9 @@ from urllib.parse import urlencode
 from odoo import api, fields, models, _
 
 
-class SendCloudIntegrationWizard(models.TransientModel):
+class SendcloudIntegrationWizard(models.TransientModel):
     _name = "sendcloud.integration.wizard"
-    _description = "SendCloud Integration Wizard"
+    _description = "Sendcloud Integration Wizard"
 
     base_url = fields.Char(compute="_compute_base_url")
     integration_request_url = fields.Char(compute="_compute_integration_request_url")

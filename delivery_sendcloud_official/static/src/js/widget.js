@@ -10,7 +10,7 @@ odoo.define("delivery_sendcloud_official.widget", function(require) {
 
     var _t = core._t;
 
-    var SendCloudCustomPriceWidget = AbstractField.extend({
+    var SendcloudCustomPriceWidget = AbstractField.extend({
         events: _.extend({}, AbstractField.prototype.events, {
             click: "_onClick",
         }),
@@ -60,5 +60,5 @@ odoo.define("delivery_sendcloud_official.widget", function(require) {
         },
     });
 
-    registry.add("sendcloud_price_check_widget", SendCloudCustomPriceWidget);
+    registry.add("sendcloud_price_check_widget", SendcloudCustomPriceWidget);
 });

@@ -5,9 +5,9 @@ from odoo import api, models, fields
 from odoo.tools.safe_eval import safe_eval
 
 
-class SendCloudSenderAddress(models.Model):
+class SendcloudSenderAddress(models.Model):
     _name = "sendcloud.sender.address"
-    _description = "SendCloud Sender Address"
+    _description = "Sendcloud Sender Address"
     _rec_name = "company_name"
 
     sendcloud_code = fields.Integer(required=True)

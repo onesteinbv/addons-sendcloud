@@ -2,8 +2,8 @@
 # License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 {
-    "name": "SendCloud Shipping - Direct Print PRO",
-    "summary": "Integrates SendCloud with Direct Print PRO",
+    "name": "Sendcloud Shipping - Direct Print PRO",
+    "summary": "Integrates Sendcloud with Direct Print PRO",
     "images": ["static/description/coverimage_labelprinter.jpeg"],
     "category": "Operations/Inventory/Delivery",
     "version": "15.0.1.0.0",
