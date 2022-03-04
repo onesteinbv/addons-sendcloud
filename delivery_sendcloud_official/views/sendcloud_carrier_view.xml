@@ -36,7 +36,7 @@
     </record>
 
     <record id="action_sendcloud_carriers" model="ir.actions.act_window">
-        <field name="name">SendCloud Carriers</field>
+        <field name="name">Sendcloud Carriers</field>
         <field name="res_model">sendcloud.carrier</field>
         <field name="view_mode">tree,form</field>
     </record>

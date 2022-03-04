@@ -6,7 +6,7 @@
 
     <!-- Top menu item -->
     <menuitem id="menu_sendcloud_sendcloud"
-              name="SendCloud"
+              name="Sendcloud"
               web_icon="delivery_sendcloud_official,static/description/icon.png"
               sequence="10"
     />

@@ -4,9 +4,9 @@
 from odoo import models, fields
 
 
-class SendCloudReturn(models.Model):
+class SendcloudReturn(models.Model):
     _name = "sendcloud.return.location"
-    _description = "SendCloud Return Location"
+    _description = "Sendcloud Return Location"
 
     name = fields.Char()
     sendcloud_code = fields.Integer(required=True)

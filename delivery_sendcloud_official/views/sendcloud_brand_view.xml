@@ -59,7 +59,7 @@
     </record>
 
     <record id="action_sendcloud_brands" model="ir.actions.act_window">
-        <field name="name">SendCloud Brands</field>
+        <field name="name">Sendcloud Brands</field>
         <field name="res_model">sendcloud.brand</field>
         <field name="view_mode">tree,form</field>
     </record>

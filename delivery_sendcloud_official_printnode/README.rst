@@ -1,8 +1,8 @@
 =====================================
-SendCloud Shipping - Direct Print PRO
+Sendcloud Shipping - Direct Print PRO
 =====================================
 
-This module is an addon to the SendCloud official connector for Odoo.
+This module is an addon to the Sendcloud official connector for Odoo.
 
 This module is created to work with the module "Odoo Direct Print PRO" (printnode_base)
 created by Ventortech.

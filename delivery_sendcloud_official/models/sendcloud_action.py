@@ -10,9 +10,9 @@ from odoo import api, fields, models
 _logger = logging.getLogger(__name__)
 
 
-class SendCloudAction(models.Model):
+class SendcloudAction(models.Model):
     _name = "sendcloud.action"
-    _description = "SendCloud Action"
+    _description = "Sendcloud Action"
     _rec_name = "action"
     _order = "id desc"
 
@@ -59,7 +59,7 @@ class SendCloudAction(models.Model):
     def parse_result(self):
         self.ensure_one()
 
-        _logger.info("SendCloud parsing message:%s", self.message)
+        _logger.info("Sendcloud parsing message:%s", self.message)
 
         try:
             message = json.loads(self.message)
@@ -134,10 +134,10 @@ class SendCloudAction(models.Model):
                 sendcloud_return = self.env["sendcloud.return"].create(vals)
             self._update_action_log(sendcloud_return)
         elif message.get("action") == "integration_credentials":
-            _logger.info("SendCloud integration_credentials")
+            _logger.info("Sendcloud integration_credentials")
             if integration:
                 _logger.info(
-                    "SendCloud integration_credentials integration_id:%s",
+                    "Sendcloud integration_credentials integration_id:%s",
                     integration.id,
                 )
                 integration.write(

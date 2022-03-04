@@ -4,7 +4,7 @@
 from odoo import fields, models
 
 
-class SendCloudSyncWizard(models.TransientModel):
+class SendcloudSyncWizard(models.TransientModel):
     _inherit = "sendcloud.sync.wizard"
 
     publish_all_shipping_methods = fields.Boolean()
@@ -13,4 +13,4 @@ class SendCloudSyncWizard(models.TransientModel):
         ctx = self.env.context.copy()
         if self.publish_all_shipping_methods:
             ctx["sendcloud_publish_all_shipping_methods"] = True
-        return super(SendCloudSyncWizard, self.with_context(ctx)).button_sync()
+        return super(SendcloudSyncWizard, self.with_context(ctx)).button_sync()

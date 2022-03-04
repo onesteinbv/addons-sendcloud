@@ -2,8 +2,8 @@
 # License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
 
 {
-    "name": "SendCloud Shipping",
-    "summary": "Compute shipping costs and ship with SendCloud",
+    "name": "Sendcloud Shipping",
+    "summary": "Compute shipping costs and ship with Sendcloud",
     "images": ["static/description/sendcloud_cover.jpeg"],
     "category": "Operations/Inventory/Delivery",
     "version": "14.0.1.3.0",

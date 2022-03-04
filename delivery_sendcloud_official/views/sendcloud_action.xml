@@ -52,7 +52,7 @@
     </record>
 
     <record id="action_sendcloud_action" model="ir.actions.act_window">
-        <field name="name">SendCloud Actions</field>
+        <field name="name">Sendcloud Actions</field>
         <field name="res_model">sendcloud.action</field>
         <field name="view_mode">tree,form</field>
     </record>

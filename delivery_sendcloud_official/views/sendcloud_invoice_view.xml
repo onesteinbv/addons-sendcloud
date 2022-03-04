@@ -51,7 +51,7 @@
     </record>
 
     <record id="action_sendcloud_invoices" model="ir.actions.act_window">
-        <field name="name">SendCloud Invoices</field>
+        <field name="name">Sendcloud Invoices</field>
         <field name="res_model">sendcloud.invoice</field>
         <field name="view_mode">tree,form</field>
     </record>

@@ -6,9 +6,9 @@ from datetime import datetime
 from odoo import api, models, fields
 
 
-class SendCloudInvoice(models.Model):
+class SendcloudInvoice(models.Model):
     _name = "sendcloud.invoice"
-    _description = "SendCloud Invoice"
+    _description = "Sendcloud Invoice"
     _rec_name = "sendcloud_code"
 
     @api.model

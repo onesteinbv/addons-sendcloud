@@ -8,7 +8,7 @@ from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval
 
 
-class SendCloudParcel(models.Model):
+class SendcloudParcel(models.Model):
     _inherit = "sendcloud.parcel"
 
     def _generate_parcel_labels(self):

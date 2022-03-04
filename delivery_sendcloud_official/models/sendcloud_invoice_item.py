@@ -4,9 +4,9 @@
 from odoo import models, fields
 
 
-class SendCloudInvoice(models.Model):
+class SendcloudInvoice(models.Model):
     _name = "sendcloud.invoice.item"
-    _description = "SendCloud Invoice Items"
+    _description = "Sendcloud Invoice Items"
 
     name = fields.Char()
     sendcloud_code = fields.Integer(required=True)

@@ -8,7 +8,7 @@
         <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='destination']" position='before'>
-                <page string="SendCloud Configuration" name="sendcloud_configuration"
+                <page string="Sendcloud Configuration" name="sendcloud_configuration"
                       attrs="{'invisible': [('delivery_type', '!=', 'sendcloud')]}">
                     <group>
                         <group>
@@ -17,7 +17,7 @@
                         </group>
                         <field name="is_sendcloud_test_mode" invisible="1"/>
                         <group name="testing" string="Only for Testing" attrs="{'invisible': [('is_sendcloud_test_mode', '=', False)]}">
-                            <button name="button_from_sendcloud_sync" type="object" string="Sync From SendCloud"/>
+                            <button name="button_from_sendcloud_sync" type="object" string="Sync From Sendcloud"/>
                         </group>
                         <group>
                             <field name="sendcloud_min_weight" string="Min Weight" readonly="1"/>
@@ -48,7 +48,7 @@
     </record>
 
     <record id="action_sendcloud_shipping_methods" model="ir.actions.act_window">
-        <field name="name">SendCloud Shipping Methods</field>
+        <field name="name">Sendcloud Shipping Methods</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">delivery.carrier</field>
         <field name="view_mode">tree,form</field>
@@ -57,7 +57,7 @@
     </record>
 
     <record id="action_sendcloud_shipping_methods_returns" model="ir.actions.act_window">
-        <field name="name">SendCloud Shipping Methods for Returns</field>
+        <field name="name">Sendcloud Shipping Methods for Returns</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">delivery.carrier</field>
         <field name="view_mode">tree,form</field>

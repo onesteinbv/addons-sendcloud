@@ -14,7 +14,7 @@ class DeliveryCarrier(models.Model):
     _inherit = ["delivery.carrier", "sendcloud.mixin"]
 
     delivery_type = fields.Selection(
-        selection_add=[("sendcloud", "SendCloud")],
+        selection_add=[("sendcloud", "Sendcloud")],
         ondelete={'sendcloud': lambda recs: recs.write({
             'delivery_type': 'fixed', 'fixed_price': 0,
         })})
@@ -88,7 +88,7 @@ class DeliveryCarrier(models.Model):
         self._sendcloud_set_countries()
 
     # -------------------------- #
-    # API for SendCloud provider #
+    # API for Sendcloud provider #
     # -------------------------- #
 
     def sendcloud_rate_shipment(self, order):
@@ -127,7 +127,7 @@ class DeliveryCarrier(models.Model):
     def sendcloud_get_return_label(
         self, picking, tracking_number=None, origin_date=None
     ):
-        # this feature is not available in SendCloud
+        # this feature is not available in Sendcloud
         res = []
         return res
 
@@ -151,7 +151,7 @@ class DeliveryCarrier(models.Model):
             elif res.get("error", {}).get("code") == 404:
                 deleted_parcels.append(parcel_code)  # ignore "Not Found" error
             elif res.get("error"):
-                raise ValidationError(_("SendCloud: %s") % res["error"].get("message"))
+                raise ValidationError(_("Sendcloud: %s") % res["error"].get("message"))
         parcels_to_delete = picking.sendcloud_parcel_ids.filtered(
             lambda p: p.sendcloud_code in deleted_parcels
         )
@@ -159,7 +159,7 @@ class DeliveryCarrier(models.Model):
         picking.with_context(ctx).write({"carrier_price": 0.0})
 
     # ------------------------------- #
-    # Inherits for SendCloud provider #
+    # Inherits for Sendcloud provider #
     # ------------------------------- #
 
     def _compute_can_generate_return(self):
@@ -171,12 +171,12 @@ class DeliveryCarrier(models.Model):
     def available_carriers(self, partner):
         """
         Standard Odoo method, invoked by the super(), already filters shipping
-        methods, including SendCloud shipping methods, by the country of the
+        methods, including Sendcloud shipping methods, by the country of the
         selected partner.
-        In addition, this method filters the SendCloud shipping methods by
+        In addition, this method filters the Sendcloud shipping methods by
          - sender address (warehouse address)
          - weight range
-         - enabled/disabled service point in SendCloud integration.
+         - enabled/disabled service point in Sendcloud integration.
         :param partner:
         :return:
         """
@@ -257,7 +257,7 @@ class DeliveryCarrier(models.Model):
         )
 
     # ----------------- #
-    # SendCloud methods #
+    # Sendcloud methods #
     # ----------------- #
 
     def _sendcloud_set_countries(self):
@@ -303,7 +303,7 @@ class DeliveryCarrier(models.Model):
     @api.model
     def _prepare_sendcloud_shipping_method_from_response(self, carrier):
         return {
-            "name": "SendCloud " + carrier.get("name"),
+            "name": "Sendcloud " + carrier.get("name"),
             "delivery_type": "sendcloud",
             "sendcloud_code": carrier.get("id"),
             "sendcloud_max_weight": carrier.get("max_weight"),
@@ -316,8 +316,8 @@ class DeliveryCarrier(models.Model):
     @api.model
     def _prepare_sendcloud_shipping_method_set_product(self, vals):
         """
-        This method sets a default delivery product on newly created SendCloud shipping methods.
-        You should manually chance the delivery product on SendCloud shipping methods in
+        This method sets a default delivery product on newly created Sendcloud shipping methods.
+        You should manually chance the delivery product on Sendcloud shipping methods in
         case different products are required. Alternatively you could extend this method
         implementing your customized solution.
         :param vals: dict of values to update
@@ -457,7 +457,7 @@ class DeliveryCarrier(models.Model):
         for record in self.filtered(lambda r: r.delivery_type == "sendcloud"):
             if not record.company_id:
                 raise ValidationError(
-                    _("The company is mandatory when delivery carrier is SendCloud.")
+                    _("The company is mandatory when delivery carrier is Sendcloud.")
                 )
             if record.sendcloud_integration_id.company_id != record.company_id:
                 raise ValidationError(

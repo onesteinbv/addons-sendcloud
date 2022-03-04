@@ -4,9 +4,9 @@
 from odoo import _, api, models, fields
 
 
-class SendCloudShippingMethodCountry(models.Model):
+class SendcloudShippingMethodCountry(models.Model):
     _name = "sendcloud.shipping.method.country"
-    _description = "SendCloud Shipping Method Country"
+    _description = "Sendcloud Shipping Method Country"
 
     name = fields.Char(compute="_compute_country_id")
     country_id = fields.Many2one(
