@@ -4,9 +4,9 @@
 from odoo import models, fields
 
 
-class SendCloudShippingMethodCountryCustom(models.Model):
+class SendcloudShippingMethodCountryCustom(models.Model):
     _name = "sendcloud.shipping.method.country.custom"
-    _description = "SendCloud Shipping Method Country Custom"
+    _description = "Sendcloud Shipping Method Country Custom"
 
     iso_2 = fields.Char(required=True)
     price = fields.Float()

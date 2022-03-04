@@ -13,9 +13,9 @@
                     <div class="o_setting_left_pane">
                     </div>
                     <div class="o_setting_right_pane">
-                        <span class="o_form_label">SendCloud</span>
+                        <span class="o_form_label">Sendcloud</span>
                         <div class="text-muted">
-                            Compute shipping costs and ship with SendCloud
+                            Compute shipping costs and ship with Sendcloud
                         </div>
                         <div class="content-group">
                             <div class="mt16">
@@ -27,7 +27,7 @@
                                 <field name="sendcloud_delivery_product_id" class="oe_inline"/>
                             </div>
                             <div class="mt8">
-                                <button name="%(delivery_sendcloud_official.action_sendcloud_shipping_methods)d" icon="fa-arrow-right" type="action" string="SendCloud Shipping Methods" class="btn-link"/>
+                                <button name="%(delivery_sendcloud_official.action_sendcloud_shipping_methods)d" icon="fa-arrow-right" type="action" string="Sendcloud Shipping Methods" class="btn-link"/>
                             </div>
                         </div>
                     </div>
@@ -45,9 +45,9 @@
                     <div class="o_setting_left_pane">
                     </div>
                     <div class="o_setting_right_pane">
-                        <span class="o_form_label">SendCloud</span>
+                        <span class="o_form_label">Sendcloud</span>
                         <div class="text-muted">
-                            Compute shipping costs and ship with SendCloud
+                            Compute shipping costs and ship with Sendcloud
                         </div>
                         <div class="content-group">
                             <div class="mt16">
@@ -59,7 +59,7 @@
                                 <field name="sendcloud_delivery_product_id" class="oe_inline"/>
                             </div>
                             <div class="mt8">
-                                <button name="%(delivery_sendcloud_official.action_sendcloud_shipping_methods)d" icon="fa-arrow-right" type="action" string="SendCloud Shipping Methods" class="btn-link"/>
+                                <button name="%(delivery_sendcloud_official.action_sendcloud_shipping_methods)d" icon="fa-arrow-right" type="action" string="Sendcloud Shipping Methods" class="btn-link"/>
                             </div>
                         </div>
                     </div>

@@ -4,9 +4,9 @@
 from odoo import api, models, fields
 
 
-class SendCloudCarrier(models.Model):
+class SendcloudCarrier(models.Model):
     _name = "sendcloud.carrier"
-    _description = "SendCloud Carrier"
+    _description = "Sendcloud Carrier"
 
     name = fields.Char(required=True)
     sendcloud_code = fields.Char(required=True)

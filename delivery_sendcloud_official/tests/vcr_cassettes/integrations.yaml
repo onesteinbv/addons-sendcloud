@@ -45,13 +45,13 @@ interactions:
       - nosniff
       X-Frame-Options:
       - DENY
-      X-SendCloud-Client-Latest-Version-Linux:
+      X-Sendcloud-Client-Latest-Version-Linux:
       - 1.0.2
-      X-SendCloud-Client-Latest-Version-Windows:
+      X-Sendcloud-Client-Latest-Version-Windows:
       - 1.0.4
-      X-SendCloud-Client-Latest-Version-macOS:
+      X-Sendcloud-Client-Latest-Version-macOS:
       - 1.0.5
-      X-SendCloud-Panel-ID:
+      X-Sendcloud-Panel-ID:
       - 918162306e51bf6f4ce91256e5b9fa6a07265abd
       X-XSS-Protection:
       - 1; mode=block

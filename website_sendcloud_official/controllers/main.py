@@ -10,7 +10,7 @@ from odoo.addons.website_sale_delivery.controllers.main import WebsiteSaleDelive
 _logger = logging.getLogger(__name__)
 
 
-class WebsiteSaleSendCloudDelivery(WebsiteSaleDelivery):
+class WebsiteSaleSendcloudDelivery(WebsiteSaleDelivery):
 
     def _update_website_sale_delivery_return(self, order, **post):
         res = super()._update_website_sale_delivery_return(order, **post)
@@ -57,6 +57,6 @@ class WebsiteSaleSendCloudDelivery(WebsiteSaleDelivery):
     #     carrier = order.carrier_id
     #     if carrier.sendcloud_service_point_input == "required":
     #         if not order.sendcloud_service_point_address:
-    #             raise ValidationError(_("SendCloud Service Point is required."))
+    #             raise ValidationError(_("Sendcloud Service Point is required."))
     #
     #     return super().payment_validate(transaction_id, sale_order_id, **post)

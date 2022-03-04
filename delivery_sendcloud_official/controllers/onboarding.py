@@ -8,7 +8,7 @@ from odoo.http import request
 class OnboardingController(http.Controller):
     @http.route("/sendcloud/sendcloud_onboarding_panel", auth="user", type="json")
     def sendcloud_onboarding(self):
-        """ Returns the `banner` for the SendCloud onboarding panel.
+        """ Returns the `banner` for the Sendcloud onboarding panel.
             It can be empty if the user has closed it or if he doesn't have
             the permission to see it. """
 

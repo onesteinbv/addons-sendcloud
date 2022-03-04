@@ -148,14 +148,14 @@
     </record>
 
     <record id="action_sendcloud_parcels" model="ir.actions.act_window">
-        <field name="name">SendCloud Parcels</field>
+        <field name="name">Sendcloud Parcels</field>
         <field name="res_model">sendcloud.parcel</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('is_return', '!=', True)]</field>
     </record>
 
     <record id="action_sendcloud_return_parcels" model="ir.actions.act_window">
-        <field name="name">SendCloud Return Parcels</field>
+        <field name="name">Sendcloud Return Parcels</field>
         <field name="res_model">sendcloud.parcel</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('is_return', '=', True)]</field>

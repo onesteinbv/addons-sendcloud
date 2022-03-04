@@ -5,9 +5,9 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
-class SendCloudWebsiteBrandWizard(models.TransientModel):
+class SendcloudWebsiteBrandWizard(models.TransientModel):
     _name = "sendcloud.website.brand.wizard"
-    _description = "SendCloud Website Brand Wizard"
+    _description = "Sendcloud Website Brand Wizard"
 
     def _default_website_ids(self):
         websites = self.env["website"].search(
@@ -39,7 +39,7 @@ class SendCloudWebsiteBrandWizard(models.TransientModel):
         company.set_onboarding_step_done("sendcloud_onboarding_website_brand_state")
 
 
-class SendCloudChangeWebsiteBrandWizard(models.TransientModel):
+class SendcloudChangeWebsiteBrandWizard(models.TransientModel):
     _name = "sendcloud.change.website.brand.wizard"
     _description = "Website, Change Brand Wizard"
 

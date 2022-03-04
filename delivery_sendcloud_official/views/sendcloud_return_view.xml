@@ -86,7 +86,7 @@
     </record>
 
     <record id="action_sendcloud_returns" model="ir.actions.act_window">
-        <field name="name">SendCloud Returns</field>
+        <field name="name">Sendcloud Returns</field>
         <field name="res_model">sendcloud.return</field>
         <field name="view_mode">tree,form</field>
     </record>

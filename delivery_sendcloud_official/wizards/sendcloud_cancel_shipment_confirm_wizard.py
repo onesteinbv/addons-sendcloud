@@ -4,9 +4,9 @@
 from odoo import models
 
 
-class SendCloudCancelShipmentConfirmWizard(models.TransientModel):
+class SendcloudCancelShipmentConfirmWizard(models.TransientModel):
     _name = "sendcloud.cancel.shipment.confirm.wizard"
-    _description = "SendCloud Cancel Shipment Confirm Wizard"
+    _description = "Sendcloud Cancel Shipment Confirm Wizard"
 
     def do_cancel_shipment(self):
         active_id = self.env.context.get("active_id")

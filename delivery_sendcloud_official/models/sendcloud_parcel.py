@@ -8,10 +8,10 @@ from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval
 
 
-class SendCloudParcel(models.Model):
+class SendcloudParcel(models.Model):
     _name = "sendcloud.parcel"
     _inherit = ['sendcloud.mixin', 'mail.thread', 'mail.activity.mixin']
-    _description = "SendCloud Parcel"
+    _description = "Sendcloud Parcel"
 
     @api.model
     def _selection_parcel_statuses(self):
@@ -298,7 +298,7 @@ class SendCloudParcel(models.Model):
                     if res.get("error"):
                         if res["error"]["code"] == 404:
                             continue  # ignore "Not Found" error
-                        raise UserError(_("SendCloud: %s") % res["error"].get("message"))
+                        raise UserError(_("Sendcloud: %s") % res["error"].get("message"))
         return super().unlink()
 
     def action_create_return_parcel(self):

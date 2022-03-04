@@ -4,10 +4,10 @@
 from odoo import api, models, fields
 
 
-class SendCloudBrand(models.Model):
+class SendcloudBrand(models.Model):
     _name = "sendcloud.brand"
     _inherit = ["sendcloud.mixin"]
-    _description = "SendCloud Brand"
+    _description = "Sendcloud Brand"
 
     name = fields.Char(required=True)
     sendcloud_code = fields.Integer(required=True)

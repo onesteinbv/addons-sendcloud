@@ -19,7 +19,7 @@ recorder = VCR(
 )
 
 
-class TestDeliverySendCloud(TransactionCase):
+class TestDeliverySendcloud(TransactionCase):
     def setUp(self):
         super().setUp()
 

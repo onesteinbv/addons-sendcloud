@@ -34,7 +34,7 @@
     </record>
 
     <record id="action_sendcloud_parcel_statuses" model="ir.actions.act_window">
-        <field name="name">SendCloud Parcel Statuses</field>
+        <field name="name">Sendcloud Parcel Statuses</field>
         <field name="res_model">sendcloud.parcel.status</field>
         <field name="view_mode">tree,form</field>
     </record>

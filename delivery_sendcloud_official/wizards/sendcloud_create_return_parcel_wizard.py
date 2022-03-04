@@ -8,9 +8,9 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import UserError
 
 
-class SendCloudCreateReturnParcelWizardReturnLocation(models.TransientModel):
+class SendcloudCreateReturnParcelWizardReturnLocation(models.TransientModel):
     _name = "sendcloud.create.return.parcel.wizard.return.location"
-    _description = "SendCloud Create Return Parcel Wizard Return Location"
+    _description = "Sendcloud Create Return Parcel Wizard Return Location"
 
     name = fields.Char()
     code = fields.Integer(required=True)
@@ -25,9 +25,9 @@ class SendCloudCreateReturnParcelWizardReturnLocation(models.TransientModel):
     wizard_id = fields.Many2one("sendcloud.create.return.parcel.wizard")
 
 
-class SendCloudCreateReturnParcelWizardDeliveryOption(models.TransientModel):
+class SendcloudCreateReturnParcelWizardDeliveryOption(models.TransientModel):
     _name = "sendcloud.create.return.parcel.wizard.delivery.option"
-    _description = "SendCloud Create Return Parcel Wizard Delivery Option"
+    _description = "Sendcloud Create Return Parcel Wizard Delivery Option"
 
     code = fields.Selection(
         [("drop_off_point", "Drop-off Point"), ("in_store", "In Store"), ("drop_off_labelless", "Labelless Drop Off")], required=True
@@ -46,9 +46,9 @@ class SendCloudCreateReturnParcelWizardDeliveryOption(models.TransientModel):
             wizard.name = display_name_map[wizard.code]
 
 
-class SendCloudCreateReturnParcelWizardRefundOption(models.TransientModel):
+class SendcloudCreateReturnParcelWizardRefundOption(models.TransientModel):
     _name = "sendcloud.create.return.parcel.wizard.refund.option"
-    _description = "SendCloud Create Return Parcel Wizard Refund Option"
+    _description = "Sendcloud Create Return Parcel Wizard Refund Option"
 
     name = fields.Char(required=True)
     code = fields.Selection(
@@ -59,18 +59,18 @@ class SendCloudCreateReturnParcelWizardRefundOption(models.TransientModel):
     wizard_id = fields.Many2one("sendcloud.create.return.parcel.wizard")
 
 
-class SendCloudCreateReturnParcelWizardReason(models.TransientModel):
+class SendcloudCreateReturnParcelWizardReason(models.TransientModel):
     _name = "sendcloud.create.return.parcel.wizard.reason"
-    _description = "SendCloud Create Return Parcel Wizard Reason"
+    _description = "Sendcloud Create Return Parcel Wizard Reason"
 
     name = fields.Char(required=True)
     code = fields.Integer(required=True)
     wizard_id = fields.Many2one("sendcloud.create.return.parcel.wizard")
 
 
-class SendCloudCreateReturnParcelWizardLine(models.TransientModel):
+class SendcloudCreateReturnParcelWizardLine(models.TransientModel):
     _name = "sendcloud.create.return.parcel.wizard.line"
-    _description = "SendCloud Create Return Parcel Wizard Line"
+    _description = "Sendcloud Create Return Parcel Wizard Line"
 
     name = fields.Char()
     sendcloud_code = fields.Char(required=True)
@@ -81,9 +81,9 @@ class SendCloudCreateReturnParcelWizardLine(models.TransientModel):
     wizard_id = fields.Many2one("sendcloud.create.return.parcel.wizard")
 
 
-class SendCloudCreateReturnParcelWizard(models.TransientModel):
+class SendcloudCreateReturnParcelWizard(models.TransientModel):
     _name = "sendcloud.create.return.parcel.wizard"
-    _description = "SendCloud Create Return Parcel Wizard"
+    _description = "Sendcloud Create Return Parcel Wizard"
 
     @api.model
     def _default_language(self):
@@ -231,7 +231,7 @@ class SendCloudCreateReturnParcelWizard(models.TransientModel):
         if response.get("error"):
             error_msg = response.get("error", {}).get("message", "")
             error_code = response.get("error", {}).get("code", "")
-            raise UserError(_("SendCloud: error %s\n%s") % (error_code, error_msg))
+            raise UserError(_("Sendcloud: error %s\n%s") % (error_code, error_msg))
         portal = response.get("portal")
         return_portal_url = "https://%s.shipping-portal.com/rp/" % portal.get("domain")
         self.reasons = portal.get("reasons")
@@ -292,7 +292,7 @@ class SendCloudCreateReturnParcelWizard(models.TransientModel):
         )
         if outgoing_parcel_data.get("error"):
             res_error = outgoing_parcel_data.get("error")
-            err_msg = _("SendCloud: %s (error code: '%s')") % (
+            err_msg = _("Sendcloud: %s (error code: '%s')") % (
                 res_error.get("message"),
                 res_error.get("code"),
             )

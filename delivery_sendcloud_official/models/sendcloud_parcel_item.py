@@ -4,9 +4,9 @@
 from odoo import api, models, fields
 
 
-class SendCloudParcelItem(models.Model):
+class SendcloudParcelItem(models.Model):
     _name = "sendcloud.parcel.item"
-    _description = "SendCloud Parcel Items"
+    _description = "Sendcloud Parcel Items"
     _rec_name = "description"
 
     description = fields.Char(required=True)

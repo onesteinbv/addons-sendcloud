@@ -23,7 +23,7 @@
     </record>
 
     <record id="action_sendcloud_sync_order_wizard" model="ir.actions.act_window">
-        <field name="name">Sync past orders to SendCloud</field>
+        <field name="name">Sync past orders to Sendcloud</field>
         <field name="res_model">sendcloud.sync.order.wizard</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="sendcloud_sync_order_form" />

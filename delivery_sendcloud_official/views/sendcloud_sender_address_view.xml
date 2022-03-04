@@ -55,7 +55,7 @@
     </record>
 
     <record id="action_sendcloud_sender_address" model="ir.actions.act_window">
-        <field name="name">SendCloud Sender Addresses</field>
+        <field name="name">Sendcloud Sender Addresses</field>
         <field name="res_model">sendcloud.sender.address</field>
         <field name="view_mode">tree,form</field>
     </record>

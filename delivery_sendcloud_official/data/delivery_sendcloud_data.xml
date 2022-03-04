@@ -4,7 +4,7 @@
 
 <odoo noupdate="0">
     <record id="sendcloud_product_delivery" model="product.product">
-        <field name="name">SendCloud delivery charges</field>
+        <field name="name">Sendcloud delivery charges</field>
         <field name="default_code">sendcloud_delivery</field>
         <field name="type">service</field>
         <field name="categ_id" ref="delivery.product_category_deliveries"/>

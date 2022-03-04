@@ -4,9 +4,9 @@
 from odoo import api, fields, models
 
 
-class SendCloudMixin(models.AbstractModel):
+class SendcloudMixin(models.AbstractModel):
     _name = "sendcloud.mixin"
-    _description = "SendCloud Mixin Abstract"
+    _description = "Sendcloud Mixin Abstract"
 
     is_sendcloud_test_mode = fields.Boolean(compute="_compute_is_sendcloud_test_mode")
 
