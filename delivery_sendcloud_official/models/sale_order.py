@@ -116,3 +116,10 @@ class SaleOrder(models.Model):
         to_sync = pickings.filtered(lambda p: p.carrier_id.sendcloud_integration_id)
         to_sync._sync_picking_to_sendcloud()
         return res
+
+    def _create_delivery_line(self, carrier, price_unit):
+        line = super()._create_delivery_line(carrier, price_unit)
+        sendcloud_specific_product = self.env.context.get("sendcloud_country_specific_product")
+        if sendcloud_specific_product:
+            line.product_id = sendcloud_specific_product
+        return line

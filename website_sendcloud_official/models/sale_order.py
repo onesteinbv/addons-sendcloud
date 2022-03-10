@@ -30,3 +30,16 @@ class SaleOrder(models.Model):
                 "carrier_name": [carrier.sendcloud_carrier or ""],
             }
         }
+
+    def _check_carrier_quotation(self, force_carrier_id=None):
+        self.ensure_one()
+        if not force_carrier_id and self.partner_shipping_id.property_delivery_carrier_id:
+            force_carrier_id = self.partner_shipping_id.property_delivery_carrier_id.id
+        carrier = force_carrier_id and self.env['delivery.carrier'].browse(force_carrier_id) or self.carrier_id
+        if carrier:
+            res = carrier.rate_shipment(self)
+            if res.get("sendcloud_country_specific_product"):
+                self = self.with_context(
+                    sendcloud_country_specific_product=res["sendcloud_country_specific_product"]
+                )
+        return super(SaleOrder, self)._check_carrier_quotation(force_carrier_id)

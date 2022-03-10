@@ -104,12 +104,13 @@ class DeliveryCarrier(models.Model):
             return res
 
         country = order.partner_shipping_id.country_id
-        price = self._sendcloud_get_price_per_country(country.code)
+        price, method_country = self._sendcloud_get_price_per_country(country.code)
         price_digits = self.env["decimal.precision"].precision_get("Product Price")
         price = float_round(price, precision_digits=price_digits)
         price = order._sendcloud_convert_price_in_euro(price)
         res["success"] = True
         res["price"] = price
+        res["sendcloud_country_specific_product"] = method_country.product_id
 
         if self.sendcloud_service_point_input == "required":
             res["warning_message"] = _("This shipping method requires a Service Point.")
@@ -291,7 +292,7 @@ class DeliveryCarrier(models.Model):
             ],
             limit=1,
         )
-        return shipping_method_country.price_custom
+        return shipping_method_country.price_custom, shipping_method_country
 
     @api.model
     def _get_default_sender_address_per_company(self, company_id):

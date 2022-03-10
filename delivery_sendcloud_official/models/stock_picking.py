@@ -646,7 +646,8 @@ class StockPicking(models.Model):
         country = picking.partner_id.country_id
         carrier = picking.sale_id.carrier_id
         if carrier and country:
-            return carrier._sendcloud_get_price_per_country(country.code)
+            price, _ = carrier._sendcloud_get_price_per_country(country.code)
+            return price
         return 0.0
 
     def _sendcloud_create_update_received_parcels(self, parcels_data, company_id=False):

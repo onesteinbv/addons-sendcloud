@@ -15,3 +15,11 @@ class ChooseDeliveryCarrier(models.TransientModel):
             if vals.get("error_message"):
                 return {"error": vals["error_message"]}
         return res
+
+    def button_confirm(self):
+        vals = self.carrier_id.rate_shipment(self.order_id)
+        if vals.get("sendcloud_country_specific_product"):
+            self = self.with_context(
+                sendcloud_country_specific_product=vals["sendcloud_country_specific_product"]
+            )
+        return super(ChooseDeliveryCarrier, self).button_confirm()
