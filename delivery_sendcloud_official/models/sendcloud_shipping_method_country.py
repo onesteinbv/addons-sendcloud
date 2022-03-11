@@ -24,11 +24,19 @@ class SendcloudShippingMethodCountry(models.Model):
     sendcloud_is_return = fields.Boolean()
     product_id = fields.Many2one(
         comodel_name="product.product",
+        compute="_compute_price_custom",
+        inverse="_inverse_price_custom",
         string="Specific Delivery Product",
         domain="[('type', '=', 'service')]",
-        help="This product will be used on the sale order line"
+        help="This product will be used on the sale order line",
+        readonly=False
     )
     company_id = fields.Many2one("res.company", required=True)
+    enable_price_custom = fields.Boolean(
+        compute="_compute_price_custom",
+        inverse="_inverse_price_custom",
+        readonly=False,
+    )
     price_custom = fields.Float(
         compute="_compute_price_custom",
         inverse="_inverse_price_custom",
@@ -57,9 +65,14 @@ class SendcloudShippingMethodCountry(models.Model):
                 ],
                 limit=1,
             )
-            if custom and custom.price != False:
-                item.price_custom = custom.price
+            if custom:
                 item.price_check = "custom"
+                item.enable_price_custom = custom.enable_price_custom
+                if custom.enable_price_custom:
+                    item.price_custom = custom.price
+                else:
+                    item.price_custom = item.price
+                item.product_id = custom.product_id
             else:
                 item.price_custom = item.price
                 item.price_check = "standard"
@@ -77,6 +90,8 @@ class SendcloudShippingMethodCountry(models.Model):
             )
             if shipping_method_country:
                 shipping_method_country.price = item.price_custom
+                shipping_method_country.product_id = item.product_id
+                shipping_method_country.enable_price_custom = item.enable_price_custom
             else:
                 self.env[
                     "sendcloud.shipping.method.country.custom"].create(
@@ -85,6 +100,8 @@ class SendcloudShippingMethodCountry(models.Model):
                         "company_id": item.company_id.id,
                         "method_code": item.method_code,
                         "price": item.price_custom,
+                        "product_id": item.product_id.id,
+                        "enable_price_custom": item.enable_price_custom
                     }
                 )
 

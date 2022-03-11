@@ -19,13 +19,13 @@
                         <label for="price_custom" />
                         <div class="o_row">
                             <field
-                                name="update_price_custom"
+                                name="enable_price_custom"
                                 class="oe_inline"
                                 nolabel="1"
                             />
                             <field
                                 name="price_custom"
-                                attrs="{'readonly': [('update_price_custom', '=', False)]}"
+                                attrs="{'readonly': [('enable_price_custom', '=', False)]}"
                                 class="oe_inline"
                                 nolabel="1"
                             />
