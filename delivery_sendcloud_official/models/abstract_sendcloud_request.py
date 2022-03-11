@@ -52,6 +52,12 @@ class SendcloudRequest(models.AbstractModel):
         except requests.HTTPError:
             error_msg = resp.json().get("error", {}).get("message", "")
             raise UserError(_("Sendcloud: %s") % error_msg or resp.text)
+
+        # Handle request limiting (retry after one second)
+        if resp.status_code == 429:
+            time.sleep(1)
+            return self._do_request(type_request, url, data=data, auth=auth, headers=headers)
+
         end_time = time.time()
         response_time = end_time - start_time
         err_msg = self._check_response_ok(resp)
