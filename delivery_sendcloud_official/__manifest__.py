@@ -6,10 +6,10 @@
     "summary": "Compute shipping costs and ship with Sendcloud",
     "images": ["static/description/sendcloud_cover.jpeg"],
     "category": "Operations/Inventory/Delivery",
-    "version": "13.0.2.3.1",
+    "version": "13.0.2.3.2",
     "author": "Onestein",
     "license": "OPL-1",
-    "depends": ["delivery", "base_address_extended"],
+    "depends": ["web", "delivery", "base_address_extended"],
     "data": [
         "templates/assets.xml",
         "security/ir.model.access.csv",
