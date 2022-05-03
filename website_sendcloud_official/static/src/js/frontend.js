@@ -55,6 +55,11 @@ odoo.define("website_sendcloud_official.frontend", function(require) {
 
             // Disable pay button
             var $payButton = this.$el.find("#o_payment_form_pay");
+
+            // Return if there's no payment acquirers enabled the pay button is not visible
+            if ($payButton.length == 0) {
+                return;
+            }
             $payButton.data('disabled_reasons', $payButton.data('disabled_reasons') || {});
             $payButton.data('disabled_reasons').carrier_selection = true;
             $payButton.prop('disabled', true);
@@ -100,6 +105,12 @@ odoo.define("website_sendcloud_official.frontend", function(require) {
 
             // Enable pay button
             var $payButton = this.$el.find("#o_payment_form_pay");
+
+            // Return if there's no payment acquirers enabled the pay button is not visible
+            if ($payButton.length == 0) {
+                return;
+            }
+
             $payButton.data('disabled_reasons').carrier_selection = false;
             $payButton.prop('disabled', false);
         },
