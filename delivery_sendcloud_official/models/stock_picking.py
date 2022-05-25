@@ -259,6 +259,13 @@ class StockPicking(models.Model):
             "external_shipment_id": self.sendcloud_shipment_code,
         }
 
+    @api.model
+    def _check_state_requires_hs_code(self, country_code, state_code):
+        states = {
+            "ES": ["TF", "GC"]
+        }
+        return country_code in states and state_code in states[country_code]
+
     def _prepare_sendcloud_item_vals_from_moves(self, move):
         self.ensure_one()
         weight = self._sendcloud_convert_weight_to_kg(move.weight)
@@ -266,6 +273,9 @@ class StockPicking(models.Model):
         europe_codes = self.env.ref("base.europe").country_ids.mapped("code")
         partner_country = self.partner_id.country_id.code
         is_outside_eu = partner_country not in europe_codes
+
+        partner_state = self.partner_id.state_id.code
+        state_requires_hs_code = self._check_state_requires_hs_code(partner_country, partner_state)
 
         # Parcel items (mandatory)
         line_vals = {
@@ -276,21 +286,21 @@ class StockPicking(models.Model):
             # not converted to euro as the currency is always set
         }
         # Parcel items (mandatory when shipping outside of EU)
-        if is_outside_eu:
+        if is_outside_eu or state_requires_hs_code:
             parcel_item_outside_eu = self._prepare_sendcloud_parcel_items_outside_eu(
                 move
             )
             if not parcel_item_outside_eu.get("hs_code"):
                 raise ValidationError(
                     _(
-                        "Harmonized System Code is mandatory when shipping outside of EU.\n"
+                        "Harmonized System Code is mandatory when shipping outside of EU and to some states.\n"
                         "You should set the HS Code for product %s"
                     )
                     % move.product_tmpl_id.name
                 )
             if not parcel_item_outside_eu.get("origin_country"):
                 raise ValidationError(
-                    _("Origin Country is mandatory when shipping outside of EU.")
+                    _("Origin Country is mandatory when shipping outside of EU and to some states.")
                 )
             line_vals.update(parcel_item_outside_eu)
         # Parcel items (optional)
