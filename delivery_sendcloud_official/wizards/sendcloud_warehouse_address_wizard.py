@@ -42,7 +42,9 @@ class SendcloudWarehouseAddressWizard(models.TransientModel):
     def _check_line_countries_consistence(self):
         self.ensure_one()
         err_msg = ""
-        for line in self.warehouse_ids:
+        for line in self.warehouse_ids.filtered(
+                lambda warehouse: warehouse.sencloud_sender_address_id
+        ):
             if line.warehouse_country_code != line.sencloud_sender_address_country_code:
                 err_msg += "\n%s: %s - %s: %s" % (
                     line.warehouse_id.name,
