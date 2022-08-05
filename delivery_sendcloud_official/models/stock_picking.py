@@ -607,7 +607,9 @@ class StockPicking(models.Model):
 
     def _sync_shipment_to_sendcloud(self, err_msg, integration, vals):
         _logger.info("Sendcloud create_shipments:%s", integration.sendcloud_code)
-        response = integration.create_shipments(integration.sendcloud_code, vals)
+        response = integration\
+            .with_context(sendcloud_ok_response_status=(200, 201))\
+            .create_shipments(integration.sendcloud_code, vals)
         for confirmation in response:
             status = confirmation.get("status")
 
