@@ -91,10 +91,11 @@ class SendcloudRequest(models.AbstractModel):
 
     def _ok_response_status(self):
         # 200: OK
+        # 201: OK, eg.: creating/updating a list of shipments
         # 204: No Content, eg.: when deleting a shipment
         # 404: Not found, eg.: when deleting a parcel
         # 410: Happens when the parcel announcement has failed, the parcel status contains id of 1002 and you try to cancel it.
-        return (200, 204, 404, 410)
+        return self.env.context.get("sendcloud_ok_response_status", (200, 204, 404, 410))
 
     def _log_response_in_action(
         self, resp, type_request, url, sent_payload, response_time
