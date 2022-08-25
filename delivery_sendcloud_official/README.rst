@@ -236,6 +236,12 @@ Cancel parcels
 
 When canceling parcels a confirmation popup will ask for confirmation.
 
+Shipping outside EU
+~~~~~~~~~~~~~~~~~~~
+
+Install OCA module 'product_harmonized_system' for delivery outside of EU.
+Includes extra field 'country of origin'.
+
 
 Troubleshooting
 ~~~~~~~~~~~~~~~
