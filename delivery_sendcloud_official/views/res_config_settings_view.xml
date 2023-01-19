@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- Copyright 2021 Onestein (<https://www.onestein.nl>)
-     License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps). -->
+     License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps). -->
 
 <odoo>
 
@@ -21,6 +21,10 @@
                             <div class="mt16">
                                 <label for="is_sendcloud_test_mode" class="o_light_label" string="Enable Test Mode"/>
                                 <field name="is_sendcloud_test_mode" />
+                            </div>
+                            <div class="mt16">
+                                <label for="sendcloud_auto_create_invoice" class="o_light_label" string="Auto create invoice"/>
+                                <field name="sendcloud_auto_create_invoice" />
                             </div>
                             <div class="mt8">
                                 <button name="%(delivery_sendcloud_official.action_sendcloud_shipping_methods)d" icon="fa-arrow-right" type="action" string="Sendcloud Shipping Methods" class="btn-link"/>
@@ -49,6 +53,10 @@
                             <div class="mt16">
                                 <label for="is_sendcloud_test_mode" class="o_light_label" string="Enable Test Mode"/>
                                 <field name="is_sendcloud_test_mode" />
+                            </div>
+                            <div class="mt16">
+                                <label for="sendcloud_auto_create_invoice" class="o_light_label" string="Auto create invoice"/>
+                                <field name="sendcloud_auto_create_invoice" />
                             </div>
                             <div class="mt8">
                                 <button name="%(delivery_sendcloud_official.action_sendcloud_shipping_methods)d" icon="fa-arrow-right" type="action" string="Sendcloud Shipping Methods" class="btn-link"/>

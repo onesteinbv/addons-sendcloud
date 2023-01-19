@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
 
 import logging
 
@@ -123,3 +123,32 @@ class SaleOrder(models.Model):
         if sendcloud_specific_product:
             line.product_id = sendcloud_specific_product
         return line
+
+    def _sendcloud_order_invoice(self):
+        """ When shipping outside of EU, an invoice number must be entered in Sendcloud.
+        This method gets out invoices of the sale order.
+        In case not any invoice is present and setting "Sendcloud_auto_create_invoice"
+        is enabled, create a 100% down-payment invoice automatically.
+        """
+        self.ensure_one()
+        out_invoices = self.invoice_ids.filtered(
+            lambda i: i.move_type == "out_invoice" and i.state == "posted")
+
+        # sendcloud_auto_create_invoice is set
+        if self.company_id.sendcloud_auto_create_invoice:
+            # If shipping to outside the EU and not any invoice was posted
+            if not out_invoices and not self.partner_id.sendcloud_is_in_eu:
+                downpayment_wizard = self.env['sale.advance.payment.inv']\
+                    .with_context({
+                        'active_model': 'sale.order',
+                        'active_ids': [self.id],
+                        'active_id': self.id,
+                    }).create({
+                        'advance_payment_method': 'percentage',
+                        'amount': 100,
+                    })
+                downpayment_wizard.create_invoices()
+                self.invoice_ids.action_post()
+                out_invoices = self.invoice_ids
+
+        return out_invoices

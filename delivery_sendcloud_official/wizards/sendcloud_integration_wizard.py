@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
 
 import requests
 from urllib.parse import urlencode
@@ -25,7 +25,7 @@ class SendcloudIntegrationWizard(models.TransientModel):
 
     def _compute_base_url(self):
         for wizard in self:
-            wizard.base_url = self.env["ir.config_parameter"].get_param("web.base.url")
+            wizard.base_url = self.env["sendcloud.request"]._param_web_base_url()
 
     def _get_odoo_connect_url(self):
         return "https://panel.sendcloud.sc/shops/odoo/connect/"

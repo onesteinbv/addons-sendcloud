@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
 
 from odoo import api, fields, models
 
@@ -29,6 +29,7 @@ class ResCompany(models.Model):
     )
 
     is_sendcloud_test_mode = fields.Boolean()
+    sendcloud_auto_create_invoice = fields.Boolean()
 
     @api.depends(
         "sendcloud_integration_ids.public_key",

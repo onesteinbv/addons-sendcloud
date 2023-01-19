@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
 
 import base64
 
@@ -31,7 +31,7 @@ class SendcloudParcel(models.Model):
     telephone = fields.Char()
     name = fields.Char(required=True)
     sendcloud_code = fields.Integer(required=True)
-    label = fields.Binary(related="attachment_id.datas")
+    label = fields.Binary(related="attachment_id.datas", string="File Content")
     tracking_url = fields.Char()
     tracking_number = fields.Char()
     label_printer_url = fields.Char()
@@ -60,6 +60,7 @@ class SendcloudParcel(models.Model):
     to_post_number = fields.Text()
     parcel_item_ids = fields.One2many("sendcloud.parcel.item", "parcel_id")
     documents = fields.Text(
+        string="Documents Data",
         help="An array of documents. A parcel can contain multiple documents, for instance labels and a customs form. This field returns an array of all the available documents for this parcel."
     )
     note = fields.Text()
@@ -98,6 +99,27 @@ class SendcloudParcel(models.Model):
         comodel_name="ir.attachment",
         ondelete="cascade",
     )
+    document_ids = fields.One2many(
+        "sendcloud.parcel.document",
+        "parcel_id",
+        string="Documents",
+    )
+
+    def action_parcel_documents(self):
+        self.mapped("document_ids").unlink()
+        skip_get_parcel_document = self.env.context.get("skip_get_parcel_document")
+        for parcel in self:
+            doc_vals = []
+            for document_data in safe_eval(parcel.documents or "[]"):
+                doc_vals.append({
+                    "name": document_data["type"],
+                    "size": document_data["size"],
+                    "link": document_data["link"],
+                    "parcel_id": parcel.id,
+                })
+            parcel.document_ids = self.env["sendcloud.parcel.document"].create(doc_vals)
+            if not skip_get_parcel_document:
+                parcel.document_ids._generate_parcel_document()
 
     @api.depends("shipment")
     def _compute_shipment_id(self):
@@ -327,3 +349,45 @@ class SendcloudParcel(models.Model):
             "return_reason": data.get("return_reason"),
             "return_message": data.get("return_message"),
         }
+
+
+class SendcloudParcelDocument(models.Model):
+    _name = "sendcloud.parcel.document"
+    _description = "Sendcloud Parcel Document"
+
+    name = fields.Char(required=True)
+    size = fields.Char()
+    link = fields.Char()
+    parcel_id = fields.Many2one("sendcloud.parcel")
+    attachment_id = fields.Many2one(
+        comodel_name="ir.attachment",
+        ondelete="cascade",
+    )
+    attachment = fields.Binary(related="attachment_id.datas", string="File Content")
+
+    def action_get_parcel_document(self):
+        self.ensure_one()
+        if not self.link:
+            raise UserError(
+                _("Document not available: no link provided."))
+        self._generate_parcel_document()
+
+    def _generate_parcel_document(self):
+        for document in self.filtered(lambda p: p.link):
+            integration = document.parcel_id.company_id.sendcloud_default_integration_id
+            content = integration.get_parcel_document(document.link)
+            filename = document.generate_parcel_document_filename()
+            attachment_id = self.env["ir.attachment"].create({
+                "name": filename,
+                "res_id": document.id,
+                "res_model": document._name,
+                "datas": base64.b64encode(content),
+                "description": document.name,
+            })
+            document.attachment_id = attachment_id
+
+    def generate_parcel_document_filename(self):
+        self.ensure_one()
+        if not self.name.lower().endswith('.pdf'):
+            return self.name + ".pdf"
+        return self.name

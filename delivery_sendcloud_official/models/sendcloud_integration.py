@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
 
 from odoo import api, models, fields, _
 from odoo.tools.safe_eval import safe_eval
@@ -44,7 +44,7 @@ class SendcloudIntegration(models.Model):
 
     @api.onchange("company_id")
     def _onchange_company_id(self):
-        base_url = self.env["ir.config_parameter"].get_param("web.base.url")
+        base_url = self.env["sendcloud.request"]._param_web_base_url()
         company_id = self.company_id.id
         path = self._default_integration_webhook(company_id)
         self.webhook_url = base_url + path

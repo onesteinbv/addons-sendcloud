@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
 
 from odoo import _, api, models, fields
 
@@ -55,24 +55,29 @@ class SendcloudShippingMethodCountry(models.Model):
 
     @api.depends("iso_2", "company_id", "method_code")
     def _compute_price_custom(self):
+        isos = self.mapped("iso_2")
+        companies = self.mapped("company_id")
+        method_codes = self.mapped("method_code")
+        custom_items = self.env[
+            "sendcloud.shipping.method.country.custom"].search(
+            [
+                ("iso_2", "in", isos),
+                ("company_id", "in", companies.ids),
+                ("method_code", "in", method_codes),
+            ],
+        )
         for item in self:
-            custom = self.env[
-                "sendcloud.shipping.method.country.custom"].search(
-                [
-                    ("iso_2", "=", item.iso_2),
-                    ("company_id", "=", item.company_id.id),
-                    ("method_code", "=", item.method_code),
-                ],
-                limit=1,
+            custom = custom_items.filtered(
+                lambda ci: ci.iso_2 == item.iso_2 and ci.method_code == item.method_code and ci.company_id == item.company_id
             )
             if custom:
                 item.price_check = "custom"
-                item.enable_price_custom = custom.enable_price_custom
-                if custom.enable_price_custom:
-                    item.price_custom = custom.price
+                item.enable_price_custom = custom[0].enable_price_custom
+                if custom[0].enable_price_custom:
+                    item.price_custom = custom[0].price
                 else:
                     item.price_custom = item.price
-                item.product_id = custom.product_id
+                item.product_id = custom[0].product_id
             else:
                 item.price_custom = item.price
                 item.price_check = "standard"

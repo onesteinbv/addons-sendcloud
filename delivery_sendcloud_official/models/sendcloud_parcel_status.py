@@ -1,10 +1,7 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
-
-import base64
+# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
 
 from odoo import api, models, fields, _
-from odoo.exceptions import UserError
 
 
 class SendcloudParcelStatus(models.Model):

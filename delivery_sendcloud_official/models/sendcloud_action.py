@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
 
 import json
 import logging
@@ -147,7 +147,10 @@ class SendcloudAction(models.Model):
                         "sendcloud_code": message["integration_id"],
                     }
                 )
-                integration.action_sendcloud_update_integrations()
+                integration.with_context(
+                    skip_raise_error_401=True,
+                    skip_sendcloud_check_response=True
+                ).action_sendcloud_update_integrations()
                 self._update_action_log(integration)
                 company = integration.company_id
                 company.set_onboarding_step_done(

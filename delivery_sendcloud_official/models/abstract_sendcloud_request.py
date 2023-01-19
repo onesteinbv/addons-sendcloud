@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
 
 import time
 from json.decoder import JSONDecodeError
@@ -14,6 +14,11 @@ from odoo.exceptions import UserError
 class SendcloudRequest(models.AbstractModel):
     _name = "sendcloud.request"
     _description = "Sendcloud Request Abstract"
+
+    def _param_web_base_url(self):
+        base_url = self.env["ir.config_parameter"].get_param("web.base.url")
+        parsed_url = urlparse(base_url)
+        return parsed_url._replace(scheme="https").geturl()
 
     def _base_panel_url(self):
         return "https://panel.sendcloud.sc/api/v2"
@@ -106,7 +111,7 @@ class SendcloudRequest(models.AbstractModel):
             decoded_content = resp.content.decode()
         except:
             pass
-        if resp.status_code == 401:
+        if resp.status_code == 401 and not self.env.context.get("skip_raise_error_401"):
             error_msg = resp.json().get("error", {}).get("message", "")
             raise UserError(_("Sendcloud: %s") % error_msg or resp.text)
         company = self.company_id
@@ -257,6 +262,10 @@ class SendcloudRequest(models.AbstractModel):
 
     def get_return_portal_url(self, code):
         return self._get_panel_request("/parcels/%d/return_portal_url" % code)
+
+    def get_parcel_document(self, link):
+        res = self._do_auth_request("GET", link)
+        return res.content
 
     def cancel_parcel(self, code):
         ctx = self.env.context.copy()

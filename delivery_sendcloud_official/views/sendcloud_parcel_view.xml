@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright 2021 Onestein (<https://www.onestein.nl>)
-     License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps). -->
+     License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps). -->
 
 <odoo>
 
@@ -54,7 +54,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Parcel Items">
+                        <page string="Parcel Items" name="parcel_items">
                             <field name="parcel_item_ids" readonly="1">
                                 <tree>
                                     <field name="description"/>
@@ -71,7 +71,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="Parcel Details">
+                        <page string="Parcel Details" name="parcel_details">
                             <group>
                                 <group string="Shipping">
                                     <field name="carrier"/>
@@ -85,7 +85,6 @@
                                     <field name="order_number"/>
                                     <field name="type"/>
                                     <field name="note"/>
-                                    <field name="documents"/>
                                 </group>
                                 <group string="Shipment Details">
                                     <field name="insured_value"/>
@@ -103,7 +102,19 @@
                                 </group>
                             </group>
                         </page>
-                        <page string="Partner Details">
+                        <page string="Documents" name="parcel_documents" attrs="{'invisible': [('documents', '=', False)]}">
+                            <button name="action_parcel_documents" class="oe_link" type="object" string=" -> Get Documents" />
+                            <field name="documents" invisible="1"/>
+                            <field name="document_ids" attrs="{'invisible': [('document_ids', '=', False)]}">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="size"/>
+                                    <field name="attachment" widget="binary"/>
+                                    <button name="action_get_parcel_document" class="oe_link" type="object" string=" -> Get Document" attrs="{'invisible': [('attachment', '!=', False)]}"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Partner Details" name="partner_details">
                             <group>
                                 <group string="Address">
                                     <field name="partner_name"/>

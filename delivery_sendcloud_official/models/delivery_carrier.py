@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/14.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
 
 import json
 
@@ -315,18 +315,29 @@ class DeliveryCarrier(models.Model):
         }
 
     @api.model
-    def _prepare_sendcloud_shipping_method_set_product(self, vals):
+    def _get_sendcloud_product_delivery(self, company_id):
         """
-        This method sets a default delivery product on newly created Sendcloud shipping methods.
-        You should manually chance the delivery product on Sendcloud shipping methods in
-        case different products are required. Alternatively you could extend this method
-        implementing your customized solution.
+        This method gets a default delivery product for newly created Sendcloud shipping methods.
         :param vals: dict of values to update
         :return: updated dict of values
         """
-        product = self.env.ref("delivery_sendcloud_official.sendcloud_product_delivery")
-        vals["product_id"] = product.id
-        return vals
+        product = self.env["product.product"].search([
+            ("default_code", "=", "sendcloud_delivery"),
+            ("company_id", "in", [company_id, False]),
+        ], limit=1)
+        if product:
+            return product
+        return self.env["product.product"].create({
+            "name": "Sendcloud delivery charges",
+            "default_code": "sendcloud_delivery",
+            "type": "service",
+            "categ_id": self.env.ref("delivery.product_category_deliveries").id,
+            "sale_ok": False,
+            "purchase_ok": False,
+            "list_price": 0.0,
+            "description_sale": "Delivery Cost",
+            "company_id": company_id,
+        })
 
     @api.model
     def _sendcloud_create_update_shipping_methods(
@@ -336,6 +347,8 @@ class DeliveryCarrier(models.Model):
          regardless of the sender address.
         :return:
         """
+
+        product = self._get_sendcloud_product_delivery(company_id)
 
         # All shipping methods
         domain = [
@@ -369,7 +382,7 @@ class DeliveryCarrier(models.Model):
         new_country_vals = []
         for method in shipping_methods:
             vals = self._prepare_sendcloud_shipping_method_from_response(method)
-            vals = self._prepare_sendcloud_shipping_method_set_product(vals)
+            vals["product_id"] = product.id
             vals["sendcloud_is_return"] = is_return
             if method.get("id") in existing_shipping_methods_map:
                 existing_shipping_methods_map[method.get("id")].write(vals)
