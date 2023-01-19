@@ -88,7 +88,7 @@ class StockPicking(models.Model):
 
             service_point_data = json.loads(self.sendcloud_service_point_address)
 
-        sender = self.partner_id
+        sender = self._get_sendcloud_recipient()
 
         vals = self.generate_sendcloud_ref_uuid_vals()
         if self.sendcloud_shipment_uuid:
@@ -102,7 +102,7 @@ class StockPicking(models.Model):
         # Recipient address details (mandatory)
         vals.update(
             {
-                "name": sender.name,
+                "name": sender.name or sender.display_name,
                 "address": sender.street_name,
                 "house_number": sender.street_number or "",
                 "city": sender.city,
@@ -202,7 +202,7 @@ class StockPicking(models.Model):
             moves = self.move_lines  # TODO should be never the case, raise an error?
         total_weight = 0.0
         for move in moves:
-            line_vals = self._prepare_sendcloud_item_vals_from_moves(move)
+            line_vals = self._prepare_sendcloud_item_vals_from_moves(move, package=package)
             total_weight += line_vals["weight"]
             parcel_items += [line_vals]
 
@@ -250,13 +250,19 @@ class StockPicking(models.Model):
 
         return vals
 
+    def _get_sendcloud_recipient(self):
+        self.ensure_one()
+        return self.partner_id or self.sale_id.partner_id
+
     def generate_sendcloud_ref_uuid_vals(self):
         self.ensure_one()
         order = self.sale_id
         if not order.sendcloud_order_code:
-            order.sendcloud_order_code = uuid.uuid4()
+            force_order_code = self.env.context.get("force_sendcloud_order_code")
+            order.sendcloud_order_code = force_order_code or uuid.uuid4()
         if not self.sendcloud_shipment_code:
-            self.sendcloud_shipment_code = uuid.uuid4()
+            force_shipment_code = self.env.context.get("force_sendcloud_shipment_code")
+            self.sendcloud_shipment_code = force_shipment_code or uuid.uuid4()
         return {
             "external_order_id": order.sendcloud_order_code,
             "external_shipment_id": self.sendcloud_shipment_code,
@@ -269,9 +275,18 @@ class StockPicking(models.Model):
         }
         return country_code in states and state_code in states[country_code]
 
-    def _prepare_sendcloud_item_vals_from_moves(self, move):
+    def _prepare_sendcloud_item_vals_from_moves(self, move, package=False):
         self.ensure_one()
+
         weight = self._sendcloud_convert_weight_to_kg(move.weight)
+        if not package:
+            quantity = int(move.product_uom_qty)  # TODO should be quantity_done ?
+        else:
+            move_lines = move.move_line_ids.filtered(lambda l: l.result_package_id == package)
+            if move_lines:
+                quantity = sum(move_lines.mapped('qty_done'))
+            else:
+                quantity = sum(package.mapped('quant_ids.quantity'))
 
         europe_codes = self.env.ref("base.europe").country_ids.mapped("code")
         partner_country = self.partner_id.country_id.code
@@ -283,7 +298,7 @@ class StockPicking(models.Model):
         # Parcel items (mandatory)
         line_vals = {
             "description": move.product_id.display_name,
-            "quantity": int(move.product_uom_qty),  # TODO should be quantity_done ?
+            "quantity": quantity,
             "weight": weight,
             "value": move.sale_line_id.price_unit,
             # not converted to euro as the currency is always set
@@ -338,6 +353,14 @@ class StockPicking(models.Model):
             # use field provided by OCA module "product_harmonized_system" if installed
             hs_code = product_tmplate.hs_code_id.hs_code
             origin_country = product_tmplate.origin_country_id.code or origin_country
+        is_account_intrastat_installed = self.env["ir.module.module"].search([
+            ("name", "=", "account_intrastat"),
+            ("state", "=", "installed")
+        ], limit=1)
+        if is_account_intrastat_installed:
+            # use field provided by Enterprise module "account_intrastat" if installed
+            hs_code = product_tmplate.intrastat_id.code or hs_code
+            origin_country = product_tmplate.intrastat_origin_country_id.code or origin_country
         return {"hs_code": hs_code, "origin_country": origin_country}
 
     def _prepare_sendcloud_parcels_from_picking(self):
@@ -630,7 +653,6 @@ class StockPicking(models.Model):
                         raise  # TODO
 
             if status == "created":
-                picking.state = "assigned"
                 picking.sendcloud_shipment_uuid = sendcloud_shipment_uuid
                 picking.sendcloud_last_cached = fields.Datetime.now()
             elif status == "updated":
