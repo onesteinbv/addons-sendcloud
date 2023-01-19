@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright 2021 Onestein (<https://www.onestein.nl>)
-     License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps). -->
+     License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps). -->
 
 <odoo>
 
@@ -45,12 +45,18 @@
                         <group string="Parcel Label">
                             <field name="label_printer_url"/>
                             <field name="label"/>
-                            <button name="action_get_parcel_label" class="oe_link" type="object" string=" -> Get Label" attrs="{'invisible': [('label', '!=', False)]}"/>
+                            <label for="label" string="" class="oe_inline d-none"/>
+                            <div class="o_row o_row_readonly">
+                                <button name="action_get_parcel_label" class="oe_link" type="object" string=" -> Get Label" attrs="{'invisible': [('label', '!=', False)]}"/>
+                            </div>
                         </group>
                         <group string="Return Portal" attrs="{'invisible': [('is_return', '=', True)]}">
                             <field name="return_portal_url" attrs="{'invisible': [('return_portal_url', '=', False)]}"/>
-                            <button name="action_get_return_portal_url" class="oe_link" type="object" string=" -> Get Return Portal Url" attrs="{'invisible': [('return_portal_url', '!=', False)]}"/>
-                            <button name="action_create_return_parcel" class="oe_link" type="object" string=" -> Create Return Parcel" attrs="{'invisible': [('is_return', '=', True)]}"/>
+                            <label for="return_portal_url" string="" class="oe_inline d-none"/>
+                            <div class="o_row o_row_readonly">
+                                <button name="action_get_return_portal_url" class="oe_link" type="object" string=" -> Get Return Portal Url" attrs="{'invisible': [('return_portal_url', '!=', False)]}"/>
+                                <button name="action_create_return_parcel" class="oe_link" type="object" string=" -> Create Return Parcel" attrs="{'invisible': [('is_return', '=', True)]}"/>
+                            </div>
                         </group>
                     </group>
                     <notebook>

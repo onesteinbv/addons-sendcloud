@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright 2021 Onestein (<https://www.onestein.nl>)
-     License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps). -->
+     License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps). -->
 
 <odoo>
 
@@ -26,7 +26,10 @@
                         </group>
                     </group>
                     <group string="Items">
-                        <button name="button_get_invoice_details" class="oe_link" type="object" string=" -> Update Items"/>
+                        <label for="ref" string="" class="o_form_label oe_inline d-none"/>
+                        <div class="o_row o_row_readonly">
+                            <button name="button_get_invoice_details" class="oe_link" type="object" string=" -> Update Items"/>
+                        </div>
                     </group>
                     <field name="item_ids"/>
                 </sheet>

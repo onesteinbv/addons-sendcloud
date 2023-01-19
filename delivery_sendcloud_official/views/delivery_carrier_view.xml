@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright 2021 Onestein (<https://www.onestein.nl>)
-     License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps). -->
+     License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps). -->
 
 <odoo>
     <record id="view_delivery_carrier_form" model="ir.ui.view">
@@ -33,8 +33,9 @@
                             <field name="country_id" readonly="1"/>
                             <field name="iso_2" readonly="1"/>
                             <field name="product_id" readonly="1"/>
-                            <field name="price_custom" string="Price"/>
-                            <field name="price_check" widget="sendcloud_price_check_widget" />
+                            <field name="price_custom" string="Price" decoration-warning="price_check == 'custom'" />
+                            <field name="price_check" invisible="1"/>
+                            <button name="sendcloud_custom_price_details" type="object" class="btn fa fa-arrow-circle-right o_price_check" title="Set Custom Price" />
                         </tree>
                     </field>
                 </page>

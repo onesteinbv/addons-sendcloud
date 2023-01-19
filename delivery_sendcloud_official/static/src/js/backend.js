@@ -1,142 +1,103 @@
-/* Copyright 2021 Onestein (<https://www.onestein.nl>)
- * License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps). */
+/** @odoo-module **/
+import { WarningDialog } from '@web/core/errors/error_dialogs';
+import { registry } from "@web/core/registry";
+import { _lt } from "@web/core/l10n/translation";
+import { useInputField } from "@web/views/fields/input_field_hook";
+import { useService } from "@web/core/utils/hooks";
+import { Component, onWillStart } from "@odoo/owl";
+import { loadJS } from "@web/core/assets";
 
-odoo.define("sendcloud_delivery_official.ServicePointSelector", function(require) {
-    "use strict";
+export class ServicePointSelectorField extends Component {
+    setup() {
+        useInputField({ getValue: () => this.props.value || "" });
+        this.dialog = useService("dialog");
+        onWillStart(() => loadJS("/delivery_sendcloud_official/static/src/lib/sendcloud/api.min.js"));
+    }
 
-    var AbstractField = require("web.AbstractField");
-    var ServicesMixin = require("web.ServicesMixin");
-    var Dialog = require('web.Dialog');
-    var BasicModel = require('web.BasicModel');
-    var core = require("web.core");
-    var session = require('web.session');
-    var field_registry = require("web.field_registry");
-    var getUserSendcloudLanguage = require("sendcloud_delivery_official.common").getUserSendcloudLanguage;
-    var qweb = core.qweb;
-    var _t = core._t;
+    async onClearClick(event) {
+        this.props.update("");
+    }
 
-    BasicModel.include({
-        _fetchSpecialSendcloudDetails: function(record, fieldName) {
-            var context = record.getContext({
-                fieldName: fieldName
+    async _onServicePointError(errors) {
+        var irrelevantErrors = ['Closed'];
+        var relevantErrors = _.difference(errors, irrelevantErrors);
+
+        if (relevantErrors.length) {
+            this.dialog.add(WarningDialog, {
+                title: this.env._t('Failure in opening Service Point Selector'),
+                message: relevantErrors.join("\n"),
             });
+        }
+    }
 
-            if (typeof record.res_id === 'string') {
-                return Promise.resolve();
-            }
+    async _onServicePointSelected(servicePoint) {
+        this.props.update(JSON.stringify(servicePoint));
+    }
 
-            return this._rpc({
-                model: record.model,
-                method: 'get_sendcloud_details',
-                args: [record.res_id],
-                context: context,
-            });
-        },
-    });
+    async onInputClick(ev) {
+        var value = this.props.record.data.sendcloud_sp_details;
+        if (!value) {
+            return "";
+        }
 
-    var ServicePointSelector = AbstractField.extend({
+        var parsedValue = JSON.parse(value);
+        sendcloud.servicePoints.open(
+            {
+                apiKey: parsedValue.api_key,
+                country: parsedValue.country,
+                postalCode: parsedValue.postalcode,
+                language: parsedValue.language,
+                carriers: [parsedValue.carrier],
+            },
+            this._onServicePointSelected.bind(this),
+            this._onServicePointError.bind(this)
+        );
+    }
 
-        events: {
-            "click .o_delivery_sendcloud_select": "_onSelectClick",
-            "click .o_delivery_sendcloud_clear": "_onClearClick",
-        },
+    get sp_name() {
+        try {
+            return JSON.parse(this.props.value).name;
+        } catch {
+            return "";
+        }
+    }
 
-        specialData: '_fetchSpecialSendcloudDetails',
+    get street() {
+        try {
+            return JSON.parse(this.props.value).street;
+        } catch {
+            return "";
+        }
+    }
 
-        supportedFieldTypes: ["text"],
+    get house_number() {
+        try {
+            return JSON.parse(this.props.value).house_number;
+        } catch {
+            return "";
+        }
+    }
 
-        _getHumanReadableValue: function(value, formatted) {
-            if (!value) {
-                return "";
-            }
+    get postal_code() {
+        try {
+            return JSON.parse(this.props.value).postal_code;
+        } catch {
+            return "";
+        }
+    }
 
-            var parsedValue = JSON.parse(value);
-            if (formatted) {
-                return qweb.render("delivery_sendcloud_official.ServicePointAddress", {
-                    servicePoint: parsedValue
-                });
-            }
+    get city() {
+        try {
+            return JSON.parse(this.props.value).city;
+        } catch {
+            return "";
+        }
+    }
 
-            return [
-                parsedValue.street,
-                parsedValue.house_number,
-                parsedValue.postal_code,
-                parsedValue.city
-            ].join(', ');
-        },
+}
 
-        _renderEdit: function() {
-            var renderValues = {
-                widget: this,
-                value: this._getHumanReadableValue(this.value, false)
-            };
+ServicePointSelectorField.template = "delivery_sendcloud_official.ServicePointField";
+ServicePointSelectorField.displayName = _lt("Service Point Selector");
+ServicePointSelectorField.supportedTypes = ["text"];
 
-            if (!this.record.specialData[this.name]) {
-                return this.$el.html(
-                    _.str.sprintf("<i>%s</i>", _t("You've to save the record first to select a service point."))
-                );
-            }
-
-            this.$el.html(
-                qweb.render(
-                    "delivery_sendcloud_official.ServicePointSelector",
-                    renderValues
-                )
-            );
-        },
-
-        _renderReadonly: function() {
-            this.$el.html(this._getHumanReadableValue(this.value, true));
-        },
-
-        _clearServicePoint: function() {
-            return this._setValue("");
-        },
-
-        _onClearClick: function(event) {
-            return this._clearServicePoint();
-        },
-
-        _selectServicePoint: function() {
-            var sendcloudDetails = this.record.specialData[this.name];
-
-            if (!sendcloudDetails) {
-                return;
-            }
-
-            var config = {
-                apiKey: sendcloudDetails.key,
-                country: sendcloudDetails.country_code,
-                postalCode: sendcloudDetails.postcode,
-                language: getUserSendcloudLanguage(),
-                carriers: sendcloudDetails.carrier_name,
-            };
-
-            sendcloud.servicePoints.open(
-                config,
-                this._onServicePointSelected.bind(this),
-                this._onServicePointError.bind(this)
-            );
-        },
-
-        _onServicePointError: function(errors) {
-            var irrelevantErrors = ['Closed'];
-            var relevantErrors = _.difference(errors, irrelevantErrors);
-
-            if (relevantErrors.length) {
-                return Dialog.alert(this, relevantErrors.join("\n"));
-            }
-        },
-
-        _onServicePointSelected: function(servicePoint) {
-            return this._setValue(JSON.stringify(servicePoint));
-        },
-
-        _onSelectClick: function(event) {
-            return this._selectServicePoint();
-        },
-    });
-
-    field_registry.add('sendcloud_service_point_selector', ServicePointSelector);
-
-});
+registry.category("fields").add("sendcloud_service_point_selector", ServicePointSelectorField);

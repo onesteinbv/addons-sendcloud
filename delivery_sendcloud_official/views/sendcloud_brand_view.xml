@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright 2021 Onestein (<https://www.onestein.nl>)
-     License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps). -->
+     License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps). -->
 
 <odoo>
 
@@ -39,7 +39,10 @@
                     </group>
                     <field name="is_sendcloud_test_mode" invisible="1"/>
                     <group name="testing" string="Only for Testing" attrs="{'invisible': [('is_sendcloud_test_mode', '=', False)]}">
-                        <button name="action_create_return_parcel" class="oe_link" type="object" string=" -> Create Return Parcel"/>
+                        <label for="is_sendcloud_test_mode" string="" class="oe_inline d-none"/>
+                        <div class="o_row o_row_readonly">
+                            <button name="action_create_return_parcel" class="oe_link" type="object" string=" -> Create Return Parcel"/>
+                        </div>
                     </group>
                 </sheet>
             </form>

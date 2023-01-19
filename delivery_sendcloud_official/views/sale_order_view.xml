@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright 2021 Onestein (<https://www.onestein.nl>)
-     License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps). -->
+     License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps). -->
 
 <odoo>
     <record id="view_order_form" model="ir.ui.view">
@@ -14,12 +14,12 @@
                             <field name="sendcloud_customs_shipment_type" string="Customs Shipment Type"/>
                             <field name="is_sendcloud_delivery_type" invisible="1"/>
                             <field name="sendcloud_service_point_required" invisible="1"/>
+                            <field name="sendcloud_sp_details" invisible="1"/>
                             <field
                                 name="sendcloud_service_point_address"
                                 string="Service Point"
                                 attrs="{'invisible':[('sendcloud_service_point_required','=',False)]}"
                                 widget="sendcloud_service_point_selector"
-                                context="{'selected_partner_id': partner_shipping_id or partner_id}"
                             />
                         </group>
                     </group>

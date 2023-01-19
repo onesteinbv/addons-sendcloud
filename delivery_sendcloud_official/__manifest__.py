@@ -1,12 +1,12 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
 {
     "name": "Sendcloud Shipping",
     "summary": "Compute shipping costs and ship with Sendcloud",
     "images": ["static/description/sendcloud_cover.jpeg"],
     "category": "Operations/Inventory/Delivery",
-    "version": "15.0.1.5.0",
+    "version": "16.0.1.0.0",
     "author": "Onestein",
     "license": "OPL-1",
     "depends": ["web", "delivery", "base_address_extended"],
@@ -42,18 +42,10 @@
         "views/menu.xml",
     ],
     "assets": {
-        "web.assets_common": [
-            "delivery_sendcloud_official/static/src/lib/sendcloud/api.min.js",
-            "delivery_sendcloud_official/static/src/js/common.js"
-        ],
         "web.assets_backend": [
-            "delivery_sendcloud_official/static/src/js/backend.js",
-            "delivery_sendcloud_official/static/src/js/widget.js",
-            "delivery_sendcloud_official/static/src/scss/backend.scss",
-            "delivery_sendcloud_official/static/src/scss/widget.scss"
-        ],
-        "web.assets_qweb": [
-            "delivery_sendcloud_official/static/src/xml/backend_service_point.xml",
+            "delivery_sendcloud_official/static/src/js/*",
+            "delivery_sendcloud_official/static/src/scss/*",
+            "delivery_sendcloud_official/static/src/xml/*",
         ]
     },
     "application": True,

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- Copyright 2021 Onestein (<https://www.onestein.nl>)
-     License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps). -->
+     License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps). -->
 
 <odoo>
 
@@ -13,26 +13,36 @@
                     <div class="o_setting_left_pane">
                     </div>
                     <div class="o_setting_right_pane">
-                        <span class="o_form_label">Sendcloud</span>
+                        <div class="o_form_label">Sendcloud</div>
                         <div class="text-muted">
                             Compute shipping costs and ship with Sendcloud
                         </div>
                         <div class="content-group">
-                            <div class="mt16">
-                                <label for="is_sendcloud_test_mode" class="o_light_label" string="Enable Test Mode"/>
-                                <field name="is_sendcloud_test_mode" />
+                            <div class="content-group">
+                                <div class="row mt16" id="is_sendcloud_test_mode">
+                                    <div class="col-12">
+                                        <label for="is_sendcloud_test_mode" string="Enable Test Mode" class="p-0 col-4 o_light_label"/>
+                                        <field name="is_sendcloud_test_mode" class=" w-auto"/>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mt16">
-                                <label for="sendcloud_auto_create_invoice" class="o_light_label" string="Auto create invoice"/>
-                                <field name="sendcloud_auto_create_invoice" />
+                            <div class="content-group">
+                                <div class="row mt16" id="sendcloud_auto_create_invoice">
+                                    <div class="col-12">
+                                        <label for="sendcloud_auto_create_invoice" string="Auto create invoice" class="p-0 col-4 o_light_label"/>
+                                        <field name="sendcloud_auto_create_invoice" class=" w-auto"/>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mt8">
-                                <button name="%(delivery_sendcloud_official.action_sendcloud_shipping_methods)d" icon="fa-arrow-right" type="action" string="Sendcloud Shipping Methods" class="btn-link"/>
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <button name="%(delivery_sendcloud_official.action_sendcloud_shipping_methods)d" icon="fa-arrow-right" type="action" string="Sendcloud Shipping Methods" class="btn-link"/>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-             </xpath>
+            </xpath>
         </field>
     </record>
 
@@ -45,21 +55,31 @@
                     <div class="o_setting_left_pane">
                     </div>
                     <div class="o_setting_right_pane">
-                        <span class="o_form_label">Sendcloud</span>
+                        <div class="o_form_label">Sendcloud</div>
                         <div class="text-muted">
                             Compute shipping costs and ship with Sendcloud
                         </div>
                         <div class="content-group">
-                            <div class="mt16">
-                                <label for="is_sendcloud_test_mode" class="o_light_label" string="Enable Test Mode"/>
-                                <field name="is_sendcloud_test_mode" />
+                            <div class="content-group">
+                                <div class="row mt16" id="is_sendcloud_test_mode">
+                                    <div class="col-12">
+                                        <label for="is_sendcloud_test_mode" string="Enable Test Mode" class="p-0 col-4 o_light_label"/>
+                                        <field name="is_sendcloud_test_mode" class=" w-auto"/>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mt16">
-                                <label for="sendcloud_auto_create_invoice" class="o_light_label" string="Auto create invoice"/>
-                                <field name="sendcloud_auto_create_invoice" />
+                            <div class="content-group">
+                                <div class="row mt16" id="sendcloud_auto_create_invoice">
+                                    <div class="col-12">
+                                        <label for="sendcloud_auto_create_invoice" string="Auto create invoice" class="p-0 col-4 o_light_label"/>
+                                        <field name="sendcloud_auto_create_invoice" class=" w-auto"/>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mt8">
-                                <button name="%(delivery_sendcloud_official.action_sendcloud_shipping_methods)d" icon="fa-arrow-right" type="action" string="Sendcloud Shipping Methods" class="btn-link"/>
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <button name="%(delivery_sendcloud_official.action_sendcloud_shipping_methods)d" icon="fa-arrow-right" type="action" string="Sendcloud Shipping Methods" class="btn-link"/>
+                                </div>
                             </div>
                         </div>
                     </div>

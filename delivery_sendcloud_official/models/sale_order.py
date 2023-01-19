@@ -1,7 +1,8 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
 import logging
+import json
 
 from odoo import api, fields, models
 
@@ -25,6 +26,25 @@ class SaleOrder(models.Model):
         default=lambda self: self._default_get_sendcloud_customs_shipment_type(),
     )
     sendcloud_order_code = fields.Char(index=True)
+    sendcloud_sp_details = fields.Char(compute="_compute_sendcloud_sp_details")
+
+    @api.depends("carrier_id.sendcloud_integration_id", "carrier_id.sendcloud_carrier",
+                 "partner_id.country_id.code", "partner_id.zip",
+                 "partner_shipping_id.country_id.code", "partner_shipping_id.zip",
+                 )
+    def _compute_sendcloud_sp_details(self):
+        user_lang = self.env.user.lang.replace('_', '-').lower()
+        available_languages = ["en-us", "de-de", "en-gb", "es-es", "fr-fr", "it-it", "nl-nl"]
+        for order in self:
+            partner = order.partner_shipping_id or order.partner_id
+            vals = {
+                "api_key": order.sudo().carrier_id.sendcloud_integration_id.public_key,
+                "country": partner.country_id.code and partner.country_id.code.lower() or "",
+                "postalcode": partner.zip or "",
+                "language": user_lang if user_lang in available_languages else "en-us",
+                "carrier": order.carrier_id.sendcloud_carrier or "",
+            }
+            order.sendcloud_sp_details = json.dumps(vals)
 
     @api.depends("carrier_id.delivery_type")
     def _compute_is_sendcloud_delivery_type(self):

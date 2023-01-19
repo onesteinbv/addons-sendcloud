@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright 2021 Onestein (<https://www.onestein.nl>)
-     License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps). -->
+     License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps). -->
 
 <odoo>
     <template id="payment_delivery_methods" inherit_id="website_sale_delivery.payment_delivery_methods">
         <xpath expr="//label[@t-field='delivery.name']" position="after">
             <div t-if="delivery.sendcloud_service_point_required">
-                <button class="btn btn-secondary d-none o_website_sendcloud_btn">
+                <button class="btn btn-secondary d-none o_website_sendcloud_btn" name="website_sendcloud_btn">
                     <i class="fa fa-map-marker mr-2" />Select Service Point
                 </button>
             </div>

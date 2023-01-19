@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
 import requests
 from urllib.parse import urlencode

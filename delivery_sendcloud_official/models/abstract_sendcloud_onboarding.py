@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
 from odoo import api, fields, models
 
@@ -43,7 +43,7 @@ class SendcloudOnboardingMixin(models.AbstractModel):
         """ This method is called on the controller rendering method and ensures that
             the animations are displayed only one time. """
         steps = self._sendcloud_onboarding_state_steps()
-        return self.get_and_update_onbarding_state("sendcloud_onboarding_state", steps)
+        return self._get_and_update_onboarding_state("sendcloud_onboarding_state", steps)
 
     def _sendcloud_onboarding_state_steps(self):
         return [

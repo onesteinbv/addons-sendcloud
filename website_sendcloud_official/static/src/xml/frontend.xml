@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- Copyright 2021 Onestein (<https://www.onestein.nl>)
-     License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps). -->
+     License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps). -->
 
 <templates>
     <div t-name="website_sendcloud_official.Address" class="o_website_sendcloud_address">

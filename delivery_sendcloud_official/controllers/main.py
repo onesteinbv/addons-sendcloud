@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
 from contextlib import closing
 
@@ -22,7 +22,7 @@ class DeliverySendcloud(http.Controller):
         auth="none",
     )
     def sendcloud_integration_webhook(self, db, company_id, **kwargs):
-        payload_data = request.jsonrequest
+        payload_data = request.get_json_data()
         _logger.info("Sendcloud payload_data:%s", str(payload_data))
         with closing(odoo.sql_db.db_connect(db).cursor()) as cr:
             cr.transaction = odoo.api.Transaction(api.Registry(db))

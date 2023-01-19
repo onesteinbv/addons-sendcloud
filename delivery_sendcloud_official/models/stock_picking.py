@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
 from collections import defaultdict
 import logging
@@ -46,7 +46,22 @@ class StockPicking(models.Model):
     sendcloud_service_point_address = fields.Text(
         compute="_compute_sendcloud_service_point_address", readonly=False, store=True
     )
-    sendcloud_shipment_code = fields.Char(index=True)
+    sendcloud_shipment_code = fields.Char(index=True, copy=False)
+    sendcloud_sp_details = fields.Char(compute="_compute_sendcloud_sp_details")
+
+    @api.depends("carrier_id.sendcloud_integration_id", "carrier_id.sendcloud_carrier", "partner_id.country_id.code", "partner_id.zip")
+    def _compute_sendcloud_sp_details(self):
+        user_lang = self.env.user.lang.replace('_', '-').lower()
+        available_languages = ["en-us", "de-de", "en-gb", "es-es", "fr-fr", "it-it", "nl-nl"]
+        for picking in self:
+            vals = {
+                "api_key": picking.sudo().carrier_id.sendcloud_integration_id.public_key,
+                "country": picking.partner_id.country_id.code and picking.partner_id.country_id.code.lower() or "",
+                "postalcode": picking.partner_id.zip or "",
+                "language": user_lang if user_lang in available_languages else "en-us",
+                "carrier": picking.carrier_id.sendcloud_carrier or "",
+            }
+            picking.sendcloud_sp_details = json.dumps(vals)
 
     @api.depends("sale_id.sendcloud_customs_shipment_type", "sendcloud_is_return")
     def _compute_sendcloud_customs_shipment_type(self):
@@ -193,7 +208,7 @@ class StockPicking(models.Model):
 
         # Parcel properties (mandatory when shipping outside of EU)
         parcel_items = []
-        move_lines = self.move_lines.mapped("move_line_ids")
+        move_lines = self.move_ids.mapped("move_line_ids")
         if package:
             move_lines = move_lines.filtered(lambda l: l.package_id == package or l.result_package_id == package)
         else:
@@ -201,7 +216,7 @@ class StockPicking(models.Model):
         if move_lines:
             moves = move_lines.mapped("move_id")
         else:
-            moves = self.move_lines  # TODO should be never the case, raise an error?
+            moves = self.move_ids  # TODO should be never the case, raise an error?
         total_weight = 0.0
         for move in moves:
             line_vals = self._prepare_sendcloud_item_vals_from_moves(move, package=package)
@@ -345,7 +360,7 @@ class StockPicking(models.Model):
         self.ensure_one()
         product_tmplate = move.product_tmpl_id
         hs_code = product_tmplate.hs_code
-        origin_country = self.picking_type_id.warehouse_id.partner_id.country_id.code
+        origin_country = product_tmplate.country_of_origin.code
         is_product_harmonized_system_installed = self.env["ir.module.module"].search([
             ("name", "=", "product_harmonized_system"),
             ("state", "=", "installed")
@@ -360,7 +375,7 @@ class StockPicking(models.Model):
         ], limit=1)
         if is_account_intrastat_installed:
             # use field provided by Enterprise module "account_intrastat" if installed
-            hs_code = product_tmplate.intrastat_id.code or hs_code
+            hs_code = product_tmplate.intrastat_code_id.code or hs_code
             origin_country = product_tmplate.intrastat_origin_country_id.code or origin_country
         return {"hs_code": hs_code, "origin_country": origin_country}
 
@@ -444,28 +459,6 @@ class StockPicking(models.Model):
             "context": self.env.context,
         }
 
-    def get_sendcloud_details(self):
-        self.ensure_one()
-        res = {}
-        if (
-            self.delivery_type == "sendcloud"
-            and self.picking_type_code == "outgoing"
-            and self.sendcloud_service_point_required
-        ):
-            if self.env.context.get("selected_partner_id"):
-                selected_partner_id = self.env.context["selected_partner_id"]
-                partner = self.env["res.partner"].browse(selected_partner_id)
-            else:
-                partner = self.partner_id
-            vals = {
-                "key": self.sudo().carrier_id.sendcloud_integration_id.public_key,
-                "country_code": partner.country_id.code or "",
-                "postcode": partner.zip or "",
-                "carrier_name": [self.carrier_id.sendcloud_carrier or ""],
-            }
-            res.update(vals)
-        return res
-
     def cancel_shipment(self):
         if (
             not self.env.context.get("do_sendcloud_cancel_shipment")
@@ -540,10 +533,10 @@ class StockPicking(models.Model):
             "sendcloud_service_point_address",
             "partner_id",
             "sale_id",
-            "move_lines",
+            "move_ids",
         ]
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         res = super().create(vals)
         res._sync_picking_to_sendcloud()
@@ -593,6 +586,7 @@ class StockPicking(models.Model):
         pickings = self.filtered(
             lambda p: p.delivery_type == "sendcloud"
             and p.picking_type_code == "outgoing"
+            and p.state != "cancel"
             and p.sale_id
         )   # TODo add "or uuid has a value"
         integration_map = defaultdict(list)
@@ -729,8 +723,7 @@ class StockPicking(models.Model):
         self.ensure_one()
         if self.carrier_id.delivery_type != "sendcloud":
             return
-        if self.state != "cancel":
-            self._sync_picking_to_sendcloud()
+        self._sync_picking_to_sendcloud()
 
     # ----------- #
     # Constraints #

@@ -1,5 +1,5 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
-# License OPL-1 (https://www.odoo.com/documentation/15.0/legal/licenses.html#odoo-apps).
+# License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
 from odoo import http
 from odoo.http import request
@@ -12,16 +12,15 @@ class OnboardingController(http.Controller):
             It can be empty if the user has closed it or if he doesn't have
             the permission to see it. """
 
-        if not request.env.is_admin():
-            return {}
-
         company = request.env.company
-        if company.sendcloud_onboarding_state == "closed":
+        if not request.env.is_admin() or \
+           company.sendcloud_onboarding_state == "closed":
             return {}
 
         panel_name = self._sendcloud_onboarding_panel_name()
         return {
-            "html": request.env.ref(panel_name)._render(
+            "html": request.env["ir.qweb"]._render(
+                panel_name,
                 {
                     "company": company,
                     "state": company.get_and_update_sendcloud_onboarding_state(),
