@@ -379,7 +379,7 @@ class StockPicking(models.Model):
 
         total_sendcloud_package_weight = 0.0
         for package in colli:
-            weight = package.shipping_weight or package.weight  # TODO
+            weight = package.shipping_weight or package.with_context(picking_id=self.id).weight
             weight = self._sendcloud_convert_weight_to_kg(weight)
             weight = self._sendcloud_check_collo_weight(weight)
             total_sendcloud_package_weight += weight
