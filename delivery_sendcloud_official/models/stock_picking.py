@@ -201,6 +201,8 @@ class StockPicking(models.Model):
         for move in moves:
             line_vals = self._prepare_sendcloud_item_vals_from_moves(move, package=package)
             total_weight += line_vals["weight"]
+            line_vals["weight"] = line_vals["weight"] / line_vals["quantity"] \
+                if line_vals["quantity"] else 0.0
             parcel_items += [line_vals]
 
         vals["parcel_items"] = parcel_items
