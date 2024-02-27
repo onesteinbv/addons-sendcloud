@@ -8,6 +8,7 @@ import uuid
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools import float_round, float_repr
 from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
@@ -48,6 +49,28 @@ class StockPicking(models.Model):
     )
     sendcloud_shipment_code = fields.Char(index=True, copy=False)
     sendcloud_sp_details = fields.Char(compute="_compute_sendcloud_sp_details")
+
+    label_print_status = fields.Selection(
+        [
+            ('generated', 'Generated'),
+            ('printed', 'Printed'),
+            ('partial', 'Partially Printed'),
+        ],
+        compute='_compute_label_print_status',
+        store=True,
+    )
+
+    @api.depends('sendcloud_parcel_ids', 'sendcloud_parcel_ids.label_print_status')
+    def _compute_label_print_status(self):
+        for picking in self.filtered(lambda x: x.sendcloud_parcel_ids):
+            if all(parcel.label_print_status == 'generated' for parcel in picking.sendcloud_parcel_ids):
+                picking.label_print_status = 'generated'
+            elif all(parcel.label_print_status == 'printed' for parcel in picking.sendcloud_parcel_ids):
+                picking.label_print_status = 'printed'
+            else:
+                picking.label_print_status = 'partial'
+        for picking in self.filtered(lambda x: not x.sendcloud_parcel_ids):
+            picking.label_print_status = None
 
     @api.depends("carrier_id.sendcloud_integration_id", "carrier_id.sendcloud_carrier", "partner_id.country_id.code", "partner_id.zip")
     def _compute_sendcloud_sp_details(self):
@@ -221,6 +244,8 @@ class StockPicking(models.Model):
         for move in moves:
             line_vals = self._prepare_sendcloud_item_vals_from_moves(move, package=package)
             total_weight += line_vals["weight"]
+            line_vals["weight"] = line_vals["weight"] / line_vals["quantity"] \
+                if line_vals["quantity"] else 0.0
             parcel_items += [line_vals]
 
         vals["parcel_items"] = parcel_items
@@ -311,14 +336,41 @@ class StockPicking(models.Model):
         partner_state = self.partner_id.state_id.code
         state_requires_hs_code = self._check_state_requires_hs_code(partner_country, partner_state)
 
+        price = move.sale_line_id.price_unit
+        precision_digits = move.sale_line_id.currency_id.decimal_places
+        if hasattr(move, 'bom_line_id') and move.bom_line_id and move.bom_line_id.bom_id.type == 'phantom':
+            # We want to compute each subproduct price based on the kit product price and the total price of all components of the kit.
+            # Example. Kit price is 30€, it is made up of 3 subproducts costing 15€, 15€ and 10€.
+            # Subproduct 1: Price ((15/40)*30) = 11,25€
+            # Subproduct 2: Price ((15/40)*30) = 11,25€
+            # Subproduct 3: Price ((10/40)*30) = 7,5€
+
+            total_price = 0.0
+            for line in move.bom_line_id.bom_id.bom_line_ids:
+                if line._skip_bom_line(move.sale_line_id.product_id):
+                    continue
+                total_price += (line.product_id.lst_price * line.product_qty)
+
+            subproduct = move.bom_line_id.product_id
+            kit_product = move.sale_line_id.product_id
+            if kit_product.lst_price:   # Prevent division by 0
+                value = float_repr(
+                    float_round((subproduct.lst_price / total_price) * price, precision_digits=precision_digits),
+                    precision_digits=precision_digits)
+            else:
+                value = 0
+        else:
+            value = float_repr(float_round(price, precision_digits=precision_digits), precision_digits=precision_digits)
+
         # Parcel items (mandatory)
         line_vals = {
             "description": move.product_id.display_name,
             "quantity": quantity,
             "weight": weight,
-            "value": move.sale_line_id.price_unit,
+            "value": value,
             # not converted to euro as the currency is always set
         }
+
         # Parcel items (mandatory when shipping outside of EU)
         if is_outside_eu or state_requires_hs_code:
             parcel_item_outside_eu = self._prepare_sendcloud_parcel_items_outside_eu(
@@ -507,6 +559,23 @@ class StockPicking(models.Model):
                         picking_id,
                         response.get("error").get("message"),
                     )
+
+    def action_download_sendcloud_labels(self):
+        if self.mapped('sendcloud_parcel_ids').mapped('attachment_id'):
+            self.mapped('sendcloud_parcel_ids').write({'label_print_status': 'printed'})
+            return {
+                'type': 'ir.actions.act_url',
+                'url': '/sendcloud/picking/download_labels?ids=%s' % (','.join([str(id) for id in self.ids])),
+                'target': 'self',
+            }
+
+    def action_multi_create_sendcloud_labels(self):
+        for picking in self:
+            picking.button_create_sendcloud_labels()
+
+    def action_multi_create_sendcloud_labels_download(self):
+        self.action_multi_create_sendcloud_labels()
+        self.action_download_sendcloud_labels()
 
     def button_create_sendcloud_labels(self):
         self.ensure_one()

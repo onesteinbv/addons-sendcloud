@@ -160,6 +160,7 @@
                 <field name="is_return"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="sendcloud_status"/>
+                <field name="label_print_status" />
             </tree>
         </field>
     </record>

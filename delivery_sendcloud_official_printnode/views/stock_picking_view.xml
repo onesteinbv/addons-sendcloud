@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2024 Onestein (<https://www.onestein.nl>)
+     License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps). -->
+
+<odoo>
+
+    <record id="vpicktree" model="ir.ui.view">
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="delivery_sendcloud_official.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_multi_create_sendcloud_labels_download']" position="after">
+                <button name="action_multi_create_sendcloud_labels_print" type="object" string="Create and Print Labels" />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

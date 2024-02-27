@@ -71,6 +71,7 @@ class SendcloudRequest(models.AbstractModel):
         self._log_response_in_action(resp, type_request, url, str(data), response_time)
         if err_msg:
             self.env.cr.commit()
+            err_msg = err_msg + "\n" + _("Request: %s") % data
             raise UserError(err_msg)
         return resp
 

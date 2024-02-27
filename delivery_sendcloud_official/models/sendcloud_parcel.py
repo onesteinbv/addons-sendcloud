@@ -104,6 +104,10 @@ class SendcloudParcel(models.Model):
         "parcel_id",
         string="Documents",
     )
+    label_print_status = fields.Selection([
+        ('generated', 'Generated'),
+        ('printed', 'Printed'),
+    ], default='generated')
 
     def action_parcel_documents(self):
         self.mapped("document_ids").unlink()

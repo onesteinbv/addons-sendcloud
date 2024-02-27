@@ -2,19 +2,49 @@
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
 from contextlib import closing
-
+import io
+import PyPDF2
+import base64
 import hmac
 import json
 import logging
 
 import odoo
 from odoo import SUPERUSER_ID, api, http, fields
-from odoo.http import request
+from odoo.http import content_disposition, request
 
 _logger = logging.getLogger(__name__)
 
 
 class DeliverySendcloud(http.Controller):
+
+    @http.route(['/sendcloud/picking/download_labels'], type='http', auth='public')
+    def sendcloud_picking_download_labels(self, ids, **post):
+        picking_ids = []
+        for id in ids.split(','):
+            picking_ids.append(int(id))
+        pickings = request.env['stock.picking'].browse(picking_ids)
+        file_data = []
+        for attachment in pickings.mapped('sendcloud_parcel_ids').mapped('attachment_id'):
+            file_data.append(base64.b64decode(attachment.datas))
+
+        if not file_data:
+            return
+
+        pdf_merger = PyPDF2.PdfFileMerger()
+        for pdf_data in file_data:
+            pdf_file = io.BytesIO(pdf_data)
+            pdf_merger.append(pdf_file, import_bookmarks=False)
+
+        new_stream = io.BytesIO()
+        pdf_merger.write(new_stream)
+        new_stream.seek(0)
+        pdf = new_stream.read()
+
+        file_name = "labels.pdf"  # Change the file name as needed
+        headers = [('Content-Type', 'application/pdf'), ('Content-Length', len(pdf)), ('Content-Disposition', content_disposition(file_name))]
+        return request.make_response(pdf, headers)
+
     @http.route(
         "/shop/sendcloud_integration_webhook/<string:db>/<int:company_id>",
         methods=["POST"],

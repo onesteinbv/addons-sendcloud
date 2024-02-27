@@ -385,6 +385,7 @@ class DeliveryCarrier(models.Model):
             vals["product_id"] = product.id
             vals["sendcloud_is_return"] = is_return
             if method.get("id") in existing_shipping_methods_map:
+                vals.pop('name')
                 existing_shipping_methods_map[method.get("id")].write(vals)
             else:
                 vals["company_id"] = company_id
@@ -460,7 +461,9 @@ class DeliveryCarrier(models.Model):
         internal_code = self.sendcloud_code
         params = {"sender_address": "all"}
         carrier = integration.get_shipping_method(internal_code, params)
-        self.write(self._prepare_sendcloud_shipping_method_from_response(carrier))
+        vals = self._prepare_sendcloud_shipping_method_from_response(carrier)
+        vals.pop('name')
+        self.write(vals)
 
     # ----------- #
     # Constraints #
