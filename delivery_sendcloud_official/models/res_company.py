@@ -29,6 +29,7 @@ class ResCompany(models.Model):
     )
 
     is_sendcloud_test_mode = fields.Boolean()
+    sendcloud_auto_create_invoice = fields.Boolean()
 
     @api.depends(
         "sendcloud_integration_ids.public_key",

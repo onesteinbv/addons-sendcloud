@@ -11,3 +11,7 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.is_sendcloud_test_mode",
         readonly=False,
     )
+    sendcloud_auto_create_invoice = fields.Boolean(
+        related="company_id.sendcloud_auto_create_invoice",
+        readonly=False,
+    )

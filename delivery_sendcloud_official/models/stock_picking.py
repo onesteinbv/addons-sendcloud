@@ -114,8 +114,11 @@ class StockPicking(models.Model):
             number_door = vals["house_number"] + " " + sender.street_number2
             vals["house_number"] = number_door
 
+        # If sendcloud_auto_create_invoice, create invoice
+        out_invoices = order._sendcloud_order_invoice()
+
         # Recipient address details (mandatory when shipping outside of EU)
-        out_invoices = order.invoice_ids.filtered(lambda i: i.move_type == "out_invoice" and i.state == "posted")
+        # out_invoices = order.invoice_ids.filtered(lambda i: i.move_type == "out_invoice" and i.state == "posted")
         vals.update(
             {
                 "country_state": sender.state_id.code or "",
@@ -292,7 +295,7 @@ class StockPicking(models.Model):
 
         europe_codes = self.env.ref("base.europe").country_ids.mapped("code")
         partner_country = self.partner_id.country_id.code
-        is_outside_eu = partner_country not in europe_codes
+        is_outside_eu = not self.partner_id.sendcloud_is_in_eu
 
         partner_state = self.partner_id.state_id.code
         state_requires_hs_code = self._check_state_requires_hs_code(partner_country, partner_state)

@@ -154,6 +154,15 @@ must be synchronized.
 Click on Confirm button: the shipments will be displayed in the Incoming Order View tab of the Sendcloud panel.
 They will contain a status “Ready to Process” if they are ready to generate a label and the order fulfillment will continue.
 
+Auto create invoice
+~~~~~~~~~~~~~~~~~~~
+When sending a product outside the EU, Sendcloud requires an invoice number.
+In case shipment is made with a product that can be invoiced based on delivered quantities,
+this combination of factors prevents the label being created in Sendcloud when confirming the SO.
+A possible solution is to automatically create a 100% down-payment invoice when shipping to outside the EU.
+To enable this feature, go to the "General Settings": under the Sendcloud section you can find the "Auto create invoice" flag.
+Notice: this feature is still in beta testing.
+
 Test Mode
 ~~~~~~~~~
 
