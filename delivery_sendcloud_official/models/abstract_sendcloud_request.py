@@ -3,11 +3,11 @@
 
 import time
 from json.decoder import JSONDecodeError
-
-import requests
 from urllib.parse import urlparse
 
-from odoo import models, _
+import requests
+
+from odoo import _, models
 from odoo.exceptions import UserError
 
 
@@ -43,9 +43,7 @@ class SendcloudRequest(models.AbstractModel):
         start_time = time.time()
         try:
             if type_request == "POST":
-                resp = requests.post(
-                    url=url, json=data, auth=auth, headers=headers
-                )
+                resp = requests.post(url=url, json=data, auth=auth, headers=headers)
             elif type_request == "GET":
                 resp = requests.get(url=url, params=data, auth=auth)
             elif type_request == "PUT":
@@ -61,7 +59,9 @@ class SendcloudRequest(models.AbstractModel):
         # Handle request limiting (retry after one second)
         if resp.status_code == 429:
             time.sleep(1)
-            return self._do_request(type_request, url, data=data, auth=auth, headers=headers)
+            return self._do_request(
+                type_request, url, data=data, auth=auth, headers=headers
+            )
 
         end_time = time.time()
         response_time = end_time - start_time
@@ -101,7 +101,9 @@ class SendcloudRequest(models.AbstractModel):
         # 204: No Content, eg.: when deleting a shipment
         # 404: Not found, eg.: when deleting a parcel
         # 410: Happens when the parcel announcement has failed, the parcel status contains id of 1002 and you try to cancel it.
-        return self.env.context.get("sendcloud_ok_response_status", (200, 204, 404, 410))
+        return self.env.context.get(
+            "sendcloud_ok_response_status", (200, 204, 404, 410)
+        )
 
     def _log_response_in_action(
         self, resp, type_request, url, sent_payload, response_time
@@ -168,8 +170,12 @@ class SendcloudRequest(models.AbstractModel):
         except JSONDecodeError:
             # If it is not possible get json then
             # use response exception message
-            return {"error": {"code": "JSONDecodeError",
-                              "message": ("Unable to read response message")}}
+            return {
+                "error": {
+                    "code": "JSONDecodeError",
+                    "message": ("Unable to read response message"),
+                }
+            }
         return res
 
     def _get_panel_request(self, url, params=None):

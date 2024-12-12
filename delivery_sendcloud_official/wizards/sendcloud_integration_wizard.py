@@ -1,10 +1,11 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-import requests
 from urllib.parse import urlencode
 
-from odoo import api, fields, models, _
+import requests
+
+from odoo import _, api, fields, models
 
 
 class SendcloudIntegrationWizard(models.TransientModel):
@@ -15,7 +16,9 @@ class SendcloudIntegrationWizard(models.TransientModel):
     integration_request_url = fields.Char(compute="_compute_integration_request_url")
     error_message = fields.Text(readonly=True)
     info_message = fields.Text(readonly=True)
-    company_id = fields.Many2one('res.company', required=True, default=lambda self: self.env.company)
+    company_id = fields.Many2one(
+        "res.company", required=True, default=lambda self: self.env.company
+    )
     is_sendcloud_test_mode = fields.Boolean(compute="_compute_is_sendcloud_test_mode")
 
     @api.depends("company_id.is_sendcloud_test_mode")
@@ -39,9 +42,7 @@ class SendcloudIntegrationWizard(models.TransientModel):
                 {
                     "url_webshop": wizard.base_url,
                     "webhook_url": wizard.base_url + webhook,
-                    "shop_name": self.env.cr.dbname
-                    + " "
-                    + str(self.env.company.id),
+                    "shop_name": self.env.cr.dbname + " " + str(self.env.company.id),
                 }
             )
             wizard.integration_request_url = "%s?%s" % (request_url, querystring)
@@ -83,9 +84,7 @@ class SendcloudIntegrationWizard(models.TransientModel):
             }
             self.env["sendcloud.integration"].create(vals)
         if not self.check_webhook_url():
-            action_name = (
-                "delivery_sendcloud_official.action_sendcloud_onboarding_integration_wizard"
-            )
+            action_name = "delivery_sendcloud_official.action_sendcloud_onboarding_integration_wizard"
             action = self.env.ref(action_name).read()[0]
             action["res_id"] = self.id
             return action

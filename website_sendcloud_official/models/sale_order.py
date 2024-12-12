@@ -11,10 +11,8 @@ class SaleOrder(models.Model):
         ctx = dict(self.env.context, sale_order_id=self.id)
         return super(SaleOrder, self.with_context(ctx))._get_delivery_methods()
 
-    def _cart_update(
-            self, product_id, line_id=None, add_qty=0, set_qty=0, **kwargs
-    ):
-        """ Override to update carrier quotation if quantity changed """
+    def _cart_update(self, product_id, line_id=None, add_qty=0, set_qty=0, **kwargs):
+        """Override to update carrier quotation if quantity changed"""
         # TODO
         return super()._cart_update(product_id, line_id, add_qty, set_qty, **kwargs)
 
@@ -33,13 +31,25 @@ class SaleOrder(models.Model):
 
     def _check_carrier_quotation(self, force_carrier_id=None, keep_carrier=False):
         self.ensure_one()
-        if not force_carrier_id and self.partner_shipping_id.property_delivery_carrier_id and not keep_carrier:
+        if (
+            not force_carrier_id
+            and self.partner_shipping_id.property_delivery_carrier_id
+            and not keep_carrier
+        ):
             force_carrier_id = self.partner_shipping_id.property_delivery_carrier_id.id
-        carrier = force_carrier_id and self.env['delivery.carrier'].browse(force_carrier_id) or self.carrier_id
+        carrier = (
+            force_carrier_id
+            and self.env["delivery.carrier"].browse(force_carrier_id)
+            or self.carrier_id
+        )
         if carrier:
             res = carrier.rate_shipment(self)
             if res.get("sendcloud_country_specific_product"):
                 self = self.with_context(
-                    sendcloud_country_specific_product=res["sendcloud_country_specific_product"]
+                    sendcloud_country_specific_product=res[
+                        "sendcloud_country_specific_product"
+                    ]
                 )
-        return super(SaleOrder, self)._check_carrier_quotation(force_carrier_id=force_carrier_id, keep_carrier=keep_carrier)
+        return super(SaleOrder, self)._check_carrier_quotation(
+            force_carrier_id=force_carrier_id, keep_carrier=keep_carrier
+        )

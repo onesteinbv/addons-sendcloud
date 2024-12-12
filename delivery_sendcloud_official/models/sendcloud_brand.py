@@ -1,7 +1,7 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 
 class SendcloudBrand(models.Model):
@@ -33,7 +33,9 @@ class SendcloudBrand(models.Model):
 
     def action_create_return_parcel(self):
         self.ensure_one()
-        action_name = "delivery_sendcloud_official.action_sendcloud_create_return_parcel_wizard"
+        action_name = (
+            "delivery_sendcloud_official.action_sendcloud_create_return_parcel_wizard"
+        )
         [action] = self.env.ref(action_name).read()
         action["context"] = "{'default_brand_id': %s}" % (self.id,)
         return action
@@ -56,7 +58,6 @@ class SendcloudBrand(models.Model):
 
     @api.model
     def sendcloud_update_brands(self, brand_data, company):
-
         # All records
         all_records = company.sendcloud_brand_ids
 

@@ -8,6 +8,5 @@ class StockWarehouse(models.Model):
     _inherit = "stock.warehouse"
 
     sencloud_sender_address_id = fields.Many2one(
-        related="partner_id.sencloud_sender_address_id",
-        readonly=False
+        related="partner_id.sencloud_sender_address_id", readonly=False
     )

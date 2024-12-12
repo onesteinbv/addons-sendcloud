@@ -36,14 +36,16 @@ class SendcloudOnboardingMixin(models.AbstractModel):
 
     @api.model
     def action_close_sendcloud_onboarding(self):
-        """ Mark the onboarding panel as closed. """
+        """Mark the onboarding panel as closed."""
         self.env.company.sendcloud_onboarding_state = "closed"
 
     def get_and_update_sendcloud_onboarding_state(self):
-        """ This method is called on the controller rendering method and ensures that
-            the animations are displayed only one time. """
+        """This method is called on the controller rendering method and ensures that
+        the animations are displayed only one time."""
         steps = self._sendcloud_onboarding_state_steps()
-        return self._get_and_update_onboarding_state("sendcloud_onboarding_state", steps)
+        return self._get_and_update_onboarding_state(
+            "sendcloud_onboarding_state", steps
+        )
 
     def _sendcloud_onboarding_state_steps(self):
         return [
@@ -54,7 +56,7 @@ class SendcloudOnboardingMixin(models.AbstractModel):
 
     @api.model
     def action_open_sendcloud_onboarding_integration(self):
-        """ Called by onboarding panel."""
+        """Called by onboarding panel."""
         action_name = (
             "delivery_sendcloud_official.action_sendcloud_onboarding_integration_wizard"
         )
@@ -62,12 +64,16 @@ class SendcloudOnboardingMixin(models.AbstractModel):
 
     @api.model
     def action_sendcloud_onboarding_sync(self):
-        """ Called by onboarding panel."""
-        action_name = "delivery_sendcloud_official.action_sendcloud_onboarding_sync_wizard"
+        """Called by onboarding panel."""
+        action_name = (
+            "delivery_sendcloud_official.action_sendcloud_onboarding_sync_wizard"
+        )
         return self.env.ref(action_name).read()[0]
 
     @api.model
     def action_open_sendcloud_onboarding_warehouse_address(self):
-        """ Called by onboarding panel."""
-        action_name = "delivery_sendcloud_official.action_sendcloud_onboarding_warehouse_wizard"
+        """Called by onboarding panel."""
+        action_name = (
+            "delivery_sendcloud_official.action_sendcloud_onboarding_warehouse_wizard"
+        )
         return self.env.ref(action_name).read()[0]

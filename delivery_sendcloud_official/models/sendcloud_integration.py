@@ -1,10 +1,9 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-from odoo import api, models, fields, _
-from odoo.tools.safe_eval import safe_eval
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-
+from odoo.tools.safe_eval import safe_eval
 
 # Whether you want to pull all the existing integrations from Sendcloud.
 SENDCLOUD_GET_ALL_EXISTING_INTEGRATIONS = False
@@ -16,9 +15,7 @@ class SendcloudIntegration(models.Model):
     _inherit = "sendcloud.request"
     _rec_name = "shop_name"
     _order = "sequence, id"
-    _log_access = (
-        False
-    )  # to avoid "psycopg2.errors.SerializationFailure: could not serialize access due to concurrent update"
+    _log_access = False  # to avoid "psycopg2.errors.SerializationFailure: could not serialize access due to concurrent update"
 
     shop_name = fields.Char(required=True)
     sequence = fields.Integer(help="Determine the display order", default=10)
@@ -77,7 +74,6 @@ class SendcloudIntegration(models.Model):
 
     @api.model
     def sendcloud_create_update_integrations(self, req_integrations, company):
-
         # All integrations
         domain = [("company_id", "=", company.id)]
         all_integrations = (
@@ -125,7 +121,9 @@ class SendcloudIntegration(models.Model):
 
         new_created_integrations = self.env["sendcloud.integration"]
         if vals_list and SENDCLOUD_GET_ALL_EXISTING_INTEGRATIONS:
-            new_created_integrations = self.env["sendcloud.integration"].create(vals_list)
+            new_created_integrations = self.env["sendcloud.integration"].create(
+                vals_list
+            )
 
         # Updated integrations
         updated_integrations = existing_integrations + new_created_integrations

@@ -3,21 +3,21 @@
 
 import logging
 
-from odoo import http, _
+from odoo import http
 from odoo.http import request
+
 from odoo.addons.website_sale_delivery.controllers.main import WebsiteSaleDelivery
 
 _logger = logging.getLogger(__name__)
 
 
 class WebsiteSaleSendcloudDelivery(WebsiteSaleDelivery):
-
     def _update_website_sale_delivery_return(self, order, **post):
         res = super()._update_website_sale_delivery_return(order, **post)
-        if order and post.get('carrier_id'):
-            carrier_id = int(post['carrier_id'])
-            carrier = request.env['delivery.carrier'].sudo().browse(carrier_id)
-            if carrier and carrier.delivery_type == 'sendcloud':
+        if order and post.get("carrier_id"):
+            carrier_id = int(post["carrier_id"])
+            carrier = request.env["delivery.carrier"].sudo().browse(carrier_id)
+            if carrier and carrier.delivery_type == "sendcloud":
                 res.update(order.sendcloud_sale_delivery_data(carrier))
         return res
 

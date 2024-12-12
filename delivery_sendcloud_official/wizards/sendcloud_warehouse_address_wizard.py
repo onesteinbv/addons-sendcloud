@@ -1,7 +1,7 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -13,10 +13,13 @@ class SendcloudWarehouseAddressWizard(models.TransientModel):
         warehouses = self.env["stock.warehouse"].search(
             [("company_id", "=", self.env.company.id)]
         )
-        lines_dict = [{
-            "warehouse_id": warehouse.id,
-            "sencloud_sender_address_id": warehouse.partner_id.sencloud_sender_address_id.id,
-        } for warehouse in warehouses]
+        lines_dict = [
+            {
+                "warehouse_id": warehouse.id,
+                "sencloud_sender_address_id": warehouse.partner_id.sencloud_sender_address_id.id,
+            }
+            for warehouse in warehouses
+        ]
         return self.env["sendcloud.change.warehouse.address.wizard"].create(lines_dict)
 
     warehouse_ids = fields.One2many(
@@ -43,7 +46,7 @@ class SendcloudWarehouseAddressWizard(models.TransientModel):
         self.ensure_one()
         err_msg = ""
         for line in self.warehouse_ids.filtered(
-                lambda warehouse: warehouse.sencloud_sender_address_id
+            lambda warehouse: warehouse.sencloud_sender_address_id
         ):
             if line.warehouse_country_code != line.sencloud_sender_address_country_code:
                 err_msg += "\n%s: %s - %s: %s" % (

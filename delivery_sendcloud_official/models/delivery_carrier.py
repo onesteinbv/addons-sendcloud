@@ -3,7 +3,7 @@
 
 import json
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import float_round
 from odoo.tools.safe_eval import safe_eval
@@ -15,9 +15,15 @@ class DeliveryCarrier(models.Model):
 
     delivery_type = fields.Selection(
         selection_add=[("sendcloud", "Sendcloud")],
-        ondelete={'sendcloud': lambda recs: recs.write({
-            'delivery_type': 'fixed', 'fixed_price': 0,
-        })})
+        ondelete={
+            "sendcloud": lambda recs: recs.write(
+                {
+                    "delivery_type": "fixed",
+                    "fixed_price": 0,
+                }
+            )
+        },
+    )
 
     sendcloud_code = fields.Integer()
     sendcloud_carrier = fields.Char()
@@ -44,8 +50,7 @@ class DeliveryCarrier(models.Model):
         "sendcloud.integration", compute="_compute_sendcloud_integration_id"
     )
     sendcloud_sync_countries = fields.Boolean(
-        string="Synchronize countries with Sendcloud",
-        default=True
+        string="Synchronize countries with Sendcloud", default=True
     )
 
     # -------- #
@@ -147,7 +152,10 @@ class DeliveryCarrier(models.Model):
             res = integration.cancel_parcel(parcel_code)
             if res.get("status") == "deleted":
                 deleted_parcels.append(parcel_code)
-            elif res.get("status") == "failed" and res.get("message") == "This shipment is already being cancelled.":
+            elif (
+                res.get("status") == "failed"
+                and res.get("message") == "This shipment is already being cancelled."
+            ):
                 deleted_parcels.append(parcel_code)
             elif res.get("error", {}).get("code") == 404:
                 deleted_parcels.append(parcel_code)  # ignore "Not Found" error
@@ -262,7 +270,9 @@ class DeliveryCarrier(models.Model):
     # ----------------- #
 
     def _sendcloud_set_countries(self):
-        for record in self.filtered(lambda r: r.delivery_type == "sendcloud" and r.sendcloud_sync_countries):
+        for record in self.filtered(
+            lambda r: r.delivery_type == "sendcloud" and r.sendcloud_sync_countries
+        ):
             record.country_ids = record._sendcloud_get_countries_from_cache()
 
     def _sendcloud_get_countries_from_cache(self):
@@ -321,29 +331,34 @@ class DeliveryCarrier(models.Model):
         :param vals: dict of values to update
         :return: updated dict of values
         """
-        product = self.env["product.product"].search([
-            ("default_code", "=", "sendcloud_delivery"),
-            ("company_id", "in", [company_id, False]),
-        ], limit=1)
+        product = self.env["product.product"].search(
+            [
+                ("default_code", "=", "sendcloud_delivery"),
+                ("company_id", "in", [company_id, False]),
+            ],
+            limit=1,
+        )
         if product:
             return product
-        return self.env["product.product"].create({
-            "name": "Sendcloud delivery charges",
-            "default_code": "sendcloud_delivery",
-            "type": "service",
-            "categ_id": self.env.ref("delivery.product_category_deliveries").id,
-            "sale_ok": False,
-            "purchase_ok": False,
-            "list_price": 0.0,
-            "description_sale": "Delivery Cost",
-            "company_id": company_id,
-        })
+        return self.env["product.product"].create(
+            {
+                "name": "Sendcloud delivery charges",
+                "default_code": "sendcloud_delivery",
+                "type": "service",
+                "categ_id": self.env.ref("delivery.product_category_deliveries").id,
+                "sale_ok": False,
+                "purchase_ok": False,
+                "list_price": 0.0,
+                "description_sale": "Delivery Cost",
+                "company_id": company_id,
+            }
+        )
 
     @api.model
     def _sendcloud_create_update_shipping_methods(
         self, shipping_methods, company_id, is_return=False
     ):
-        """ Sync all available shipping methods for a specific company,
+        """Sync all available shipping methods for a specific company,
          regardless of the sender address.
         :return:
         """
@@ -385,7 +400,7 @@ class DeliveryCarrier(models.Model):
             vals["product_id"] = product.id
             vals["sendcloud_is_return"] = is_return
             if method.get("id") in existing_shipping_methods_map:
-                vals.pop('name')
+                vals.pop("name")
                 existing_shipping_methods_map[method.get("id")].write(vals)
             else:
                 vals["company_id"] = company_id
@@ -462,7 +477,7 @@ class DeliveryCarrier(models.Model):
         params = {"sender_address": "all"}
         carrier = integration.get_shipping_method(internal_code, params)
         vals = self._prepare_sendcloud_shipping_method_from_response(carrier)
-        vals.pop('name')
+        vals.pop("name")
         self.write(vals)
 
     # ----------- #

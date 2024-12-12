@@ -1,8 +1,7 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
+from odoo import api, fields, models
 
 
 class SendcloudWebsiteBrandWizard(models.TransientModel):

@@ -8,8 +8,7 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     sencloud_sender_address_id = fields.Many2one(
-        comodel_name="sendcloud.sender.address",
-        string="Sendcloud Sender Address"
+        comodel_name="sendcloud.sender.address", string="Sendcloud Sender Address"
     )
     sendcloud_is_in_eu = fields.Boolean(
         compute="_compute_sendcloud_is_in_eu",

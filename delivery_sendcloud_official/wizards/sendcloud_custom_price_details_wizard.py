@@ -14,12 +14,19 @@ class SendcloudCustomPriceDetailsWizard(models.TransientModel):
         required=True,
         string="Shipping to Country",
     )
-    price = fields.Float(related="shipping_method_country_id.price", string="Standard Price")
+    price = fields.Float(
+        related="shipping_method_country_id.price", string="Standard Price"
+    )
     enable_price_custom = fields.Boolean(
         string="Enable custom price?",
-        related="shipping_method_country_id.enable_price_custom", readonly=False
+        related="shipping_method_country_id.enable_price_custom",
+        readonly=False,
     )
-    price_custom = fields.Float(related="shipping_method_country_id.price_custom", readonly=False, string="Custom Price")
+    price_custom = fields.Float(
+        related="shipping_method_country_id.price_custom",
+        readonly=False,
+        string="Custom Price",
+    )
     price_check = fields.Selection(related="shipping_method_country_id.price_check")
     product_id = fields.Many2one(
         related="shipping_method_country_id.product_id", readonly=False
@@ -33,8 +40,7 @@ class SendcloudCustomPriceDetailsWizard(models.TransientModel):
 
     def remove_custom_price(self):
         self.ensure_one()
-        self.env[
-            "sendcloud.shipping.method.country.custom"].search(
+        self.env["sendcloud.shipping.method.country.custom"].search(
             [
                 ("iso_2", "=", self.shipping_method_country_id.iso_2),
                 ("company_id", "=", self.shipping_method_country_id.company_id.id),

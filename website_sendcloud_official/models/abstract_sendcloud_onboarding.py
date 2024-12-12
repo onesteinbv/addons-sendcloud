@@ -20,6 +20,8 @@ class SendcloudOnboardingMixin(models.AbstractModel):
 
     @api.model
     def action_open_sendcloud_onboarding_website_brand(self):
-        """ Called by onboarding panel."""
-        action_name = "website_sendcloud_official.action_sendcloud_onboarding_website_wizard"
+        """Called by onboarding panel."""
+        action_name = (
+            "website_sendcloud_official.action_sendcloud_onboarding_website_wizard"
+        )
         return self.env.ref(action_name).read()[0]

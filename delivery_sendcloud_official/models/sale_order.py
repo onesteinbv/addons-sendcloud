@@ -1,8 +1,8 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-import logging
 import json
+import logging
 
 from odoo import api, fields, models
 
@@ -28,18 +28,32 @@ class SaleOrder(models.Model):
     sendcloud_order_code = fields.Char(index=True)
     sendcloud_sp_details = fields.Char(compute="_compute_sendcloud_sp_details")
 
-    @api.depends("carrier_id.sendcloud_integration_id", "carrier_id.sendcloud_carrier",
-                 "partner_id.country_id.code", "partner_id.zip",
-                 "partner_shipping_id.country_id.code", "partner_shipping_id.zip",
-                 )
+    @api.depends(
+        "carrier_id.sendcloud_integration_id",
+        "carrier_id.sendcloud_carrier",
+        "partner_id.country_id.code",
+        "partner_id.zip",
+        "partner_shipping_id.country_id.code",
+        "partner_shipping_id.zip",
+    )
     def _compute_sendcloud_sp_details(self):
-        user_lang = self.env.user.lang.replace('_', '-').lower()
-        available_languages = ["en-us", "de-de", "en-gb", "es-es", "fr-fr", "it-it", "nl-nl"]
+        user_lang = self.env.user.lang.replace("_", "-").lower()
+        available_languages = [
+            "en-us",
+            "de-de",
+            "en-gb",
+            "es-es",
+            "fr-fr",
+            "it-it",
+            "nl-nl",
+        ]
         for order in self:
             partner = order.partner_shipping_id or order.partner_id
             vals = {
                 "api_key": order.sudo().carrier_id.sendcloud_integration_id.public_key,
-                "country": partner.country_id.code and partner.country_id.code.lower() or "",
+                "country": partner.country_id.code
+                and partner.country_id.code.lower()
+                or "",
                 "postalcode": partner.zip or "",
                 "language": user_lang if user_lang in available_languages else "en-us",
                 "carrier": order.carrier_id.sendcloud_carrier or "",
@@ -139,34 +153,44 @@ class SaleOrder(models.Model):
 
     def _create_delivery_line(self, carrier, price_unit):
         line = super()._create_delivery_line(carrier, price_unit)
-        sendcloud_specific_product = self.env.context.get("sendcloud_country_specific_product")
+        sendcloud_specific_product = self.env.context.get(
+            "sendcloud_country_specific_product"
+        )
         if sendcloud_specific_product:
             line.product_id = sendcloud_specific_product
         return line
 
     def _sendcloud_order_invoice(self):
-        """ When shipping outside of EU, an invoice number must be entered in Sendcloud.
+        """When shipping outside of EU, an invoice number must be entered in Sendcloud.
         This method gets out invoices of the sale order.
         In case not any invoice is present and setting "Sendcloud_auto_create_invoice"
         is enabled, create a 100% down-payment invoice automatically.
         """
         self.ensure_one()
         out_invoices = self.invoice_ids.filtered(
-            lambda i: i.move_type == "out_invoice" and i.state == "posted")
+            lambda i: i.move_type == "out_invoice" and i.state == "posted"
+        )
 
         # sendcloud_auto_create_invoice is set
         if self.company_id.sendcloud_auto_create_invoice:
             # If shipping to outside the EU and not any invoice was posted
             if not out_invoices and not self.partner_id.sendcloud_is_in_eu:
-                downpayment_wizard = self.env['sale.advance.payment.inv']\
-                    .with_context({
-                        'active_model': 'sale.order',
-                        'active_ids': [self.id],
-                        'active_id': self.id,
-                    }).create({
-                        'advance_payment_method': 'percentage',
-                        'amount': 100,
-                    })
+                downpayment_wizard = (
+                    self.env["sale.advance.payment.inv"]
+                    .with_context(
+                        {
+                            "active_model": "sale.order",
+                            "active_ids": [self.id],
+                            "active_id": self.id,
+                        }
+                    )
+                    .create(
+                        {
+                            "advance_payment_method": "percentage",
+                            "amount": 100,
+                        }
+                    )
+                )
                 downpayment_wizard.create_invoices()
                 self.invoice_ids.action_post()
                 out_invoices = self.invoice_ids

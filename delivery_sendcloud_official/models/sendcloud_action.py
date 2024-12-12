@@ -3,6 +3,7 @@
 
 import json
 import logging
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
@@ -148,8 +149,7 @@ class SendcloudAction(models.Model):
                     }
                 )
                 integration.with_context(
-                    skip_raise_error_401=True,
-                    skip_sendcloud_check_response=True
+                    skip_raise_error_401=True, skip_sendcloud_check_response=True
                 ).action_sendcloud_update_integrations()
                 self._update_action_log(integration)
                 company = integration.company_id
@@ -160,22 +160,30 @@ class SendcloudAction(models.Model):
             parcel_data = message.get("parcel")
             picking = self.env["stock.picking"]
             if parcel_data.get("shipment_uuid"):
-                picking = self.env["stock.picking"].search([
-                    ("sendcloud_shipment_uuid", "=", parcel_data["shipment_uuid"]),
-                ], limit=1)
+                picking = self.env["stock.picking"].search(
+                    [
+                        ("sendcloud_shipment_uuid", "=", parcel_data["shipment_uuid"]),
+                    ],
+                    limit=1,
+                )
             if not picking:
                 sendcloud_order_code = parcel_data.get("external_order_id")
                 sendcloud_shipment_code = parcel_data.get("external_shipment_id")
                 if sendcloud_shipment_code.isdigit() and sendcloud_order_code.isdigit():
-                    picking = self.env["stock.picking"].search([
-                        ("id", "=", int(sendcloud_shipment_code)),
-                        ("sale_id", "=", int(sendcloud_order_code)),
-                    ])
+                    picking = self.env["stock.picking"].search(
+                        [
+                            ("id", "=", int(sendcloud_shipment_code)),
+                            ("sale_id", "=", int(sendcloud_order_code)),
+                        ]
+                    )
                 elif sendcloud_shipment_code and sendcloud_order_code:
-                    picking = self.env["stock.picking"].search([
-                        ("sendcloud_shipment_code", "=", sendcloud_shipment_code),
-                        ("sale_id.sendcloud_order_code", "=", sendcloud_order_code),
-                    ], limit=1)
+                    picking = self.env["stock.picking"].search(
+                        [
+                            ("sendcloud_shipment_code", "=", sendcloud_shipment_code),
+                            ("sale_id.sendcloud_order_code", "=", sendcloud_order_code),
+                        ],
+                        limit=1,
+                    )
             if not picking:
                 sendcloud_code = parcel_data["id"]
                 picking = (
@@ -188,7 +196,9 @@ class SendcloudAction(models.Model):
                 parcels = picking._sendcloud_create_update_received_parcels(
                     [parcel_data], self.company_id.id
                 )
-                parcel = parcels.filtered(lambda p: p.sendcloud_code == parcel_data["id"])
+                parcel = parcels.filtered(
+                    lambda p: p.sendcloud_code == parcel_data["id"]
+                )
                 self._update_action_log(parcel)
 
     def _update_action_log(self, record):
@@ -211,4 +221,4 @@ class SendcloudAction(models.Model):
     @api.model
     def sendcloud_delete_old_actions(self, days=7):
         date = fields.Datetime.to_string(fields.Date.today() - relativedelta(days=days))
-        self.search([('create_date', '<', date)]).unlink()
+        self.search([("create_date", "<", date)]).unlink()

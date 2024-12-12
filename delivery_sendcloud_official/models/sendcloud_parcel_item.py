@@ -1,7 +1,7 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-from odoo import api, models, fields
+from odoo import fields, models
 
 
 class SendcloudParcelItem(models.Model):

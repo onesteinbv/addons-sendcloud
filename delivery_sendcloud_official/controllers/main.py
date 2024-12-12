@@ -1,31 +1,33 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-from contextlib import closing
-import io
-import PyPDF2
 import base64
 import hmac
+import io
 import json
 import logging
+from contextlib import closing
+
+import PyPDF2
 
 import odoo
-from odoo import SUPERUSER_ID, api, http, fields
+from odoo import SUPERUSER_ID, api, fields, http
 from odoo.http import content_disposition, request
 
 _logger = logging.getLogger(__name__)
 
 
 class DeliverySendcloud(http.Controller):
-
-    @http.route(['/sendcloud/picking/download_labels'], type='http', auth='public')
+    @http.route(["/sendcloud/picking/download_labels"], type="http", auth="public")
     def sendcloud_picking_download_labels(self, ids, **post):
         picking_ids = []
-        for id in ids.split(','):
+        for id in ids.split(","):
             picking_ids.append(int(id))
-        pickings = request.env['stock.picking'].browse(picking_ids)
+        pickings = request.env["stock.picking"].browse(picking_ids)
         file_data = []
-        for attachment in pickings.mapped('sendcloud_parcel_ids').mapped('attachment_id'):
+        for attachment in pickings.mapped("sendcloud_parcel_ids").mapped(
+            "attachment_id"
+        ):
             file_data.append(base64.b64decode(attachment.datas))
 
         if not file_data:
@@ -42,7 +44,11 @@ class DeliverySendcloud(http.Controller):
         pdf = new_stream.read()
 
         file_name = "labels.pdf"  # Change the file name as needed
-        headers = [('Content-Type', 'application/pdf'), ('Content-Length', len(pdf)), ('Content-Disposition', content_disposition(file_name))]
+        headers = [
+            ("Content-Type", "application/pdf"),
+            ("Content-Length", len(pdf)),
+            ("Content-Disposition", content_disposition(file_name)),
+        ]
         return request.make_response(pdf, headers)
 
     @http.route(
@@ -63,14 +69,16 @@ class DeliverySendcloud(http.Controller):
             if integration:
                 _logger.info("Sendcloud integration.id:%s", integration.id)
                 timestamp = payload_data.get("timestamp")
-                sendcloud_action = env["sendcloud.action"].create({
-                    "company_id": company_id,
-                    "sendcloud_integration_id": integration.id,
-                    "message_type": "received",
-                    "action": payload_data.get("action"),
-                    "message": json.dumps(payload_data),
-                    "timestamp": str(timestamp) if timestamp else False,
-                })
+                sendcloud_action = env["sendcloud.action"].create(
+                    {
+                        "company_id": company_id,
+                        "sendcloud_integration_id": integration.id,
+                        "message_type": "received",
+                        "action": payload_data.get("action"),
+                        "message": json.dumps(payload_data),
+                        "timestamp": str(timestamp) if timestamp else False,
+                    }
+                )
                 sendcloud_action.reparse_message()
                 env.cr.commit()
 

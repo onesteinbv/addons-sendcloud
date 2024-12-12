@@ -1,7 +1,7 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-from odoo import models, api
+from odoo import api, models
 
 
 class DeliveryCarrier(models.Model):

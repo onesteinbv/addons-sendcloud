@@ -9,5 +9,5 @@ class StockPicking(models.Model):
 
     def action_multi_create_sendcloud_labels_print(self):
         self.action_multi_create_sendcloud_labels()
-        self.mapped('shipping_label_ids').print_via_printnode()
-        self.mapped('sendcloud_parcel_ids').write({'label_print_status': 'printed'})
+        self.mapped("shipping_label_ids").print_via_printnode()
+        self.mapped("sendcloud_parcel_ids").write({"label_print_status": "printed"})

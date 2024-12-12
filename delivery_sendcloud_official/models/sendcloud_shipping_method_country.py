@@ -1,7 +1,7 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-from odoo import _, api, models, fields
+from odoo import _, api, fields, models
 
 
 class SendcloudShippingMethodCountry(models.Model):
@@ -29,7 +29,7 @@ class SendcloudShippingMethodCountry(models.Model):
         string="Specific Delivery Product",
         domain="[('type', '=', 'service')]",
         help="This product will be used on the sale order line",
-        readonly=False
+        readonly=False,
     )
     company_id = fields.Many2one("res.company", required=True)
     enable_price_custom = fields.Boolean(
@@ -42,7 +42,7 @@ class SendcloudShippingMethodCountry(models.Model):
         inverse="_inverse_price_custom",
         readonly=False,
         string="Custom Price",
-        help='This price will override the standard price and will be applied to the shipping price.'
+        help="This price will override the standard price and will be applied to the shipping price.",
     )
     price_check = fields.Selection(
         [
@@ -58,8 +58,7 @@ class SendcloudShippingMethodCountry(models.Model):
         isos = self.mapped("iso_2")
         companies = self.mapped("company_id")
         method_codes = self.mapped("method_code")
-        custom_items = self.env[
-            "sendcloud.shipping.method.country.custom"].search(
+        custom_items = self.env["sendcloud.shipping.method.country.custom"].search(
             [
                 ("iso_2", "in", isos),
                 ("company_id", "in", companies.ids),
@@ -68,7 +67,9 @@ class SendcloudShippingMethodCountry(models.Model):
         )
         for item in self:
             custom = custom_items.filtered(
-                lambda ci: ci.iso_2 == item.iso_2 and ci.method_code == item.method_code and ci.company_id == item.company_id
+                lambda ci: ci.iso_2 == item.iso_2
+                and ci.method_code == item.method_code
+                and ci.company_id == item.company_id
             )
             if custom:
                 item.price_check = "custom"
@@ -85,7 +86,8 @@ class SendcloudShippingMethodCountry(models.Model):
     def _inverse_price_custom(self):
         for item in self:
             shipping_method_country = self.env[
-                "sendcloud.shipping.method.country.custom"].search(
+                "sendcloud.shipping.method.country.custom"
+            ].search(
                 [
                     ("iso_2", "=", item.iso_2),
                     ("company_id", "=", item.company_id.id),
@@ -98,15 +100,14 @@ class SendcloudShippingMethodCountry(models.Model):
                 shipping_method_country.product_id = item.product_id
                 shipping_method_country.enable_price_custom = item.enable_price_custom
             else:
-                self.env[
-                    "sendcloud.shipping.method.country.custom"].create(
+                self.env["sendcloud.shipping.method.country.custom"].create(
                     {
                         "iso_2": item.iso_2,
                         "company_id": item.company_id.id,
                         "method_code": item.method_code,
                         "price": item.price_custom,
                         "product_id": item.product_id.id,
-                        "enable_price_custom": item.enable_price_custom
+                        "enable_price_custom": item.enable_price_custom,
                     }
                 )
 

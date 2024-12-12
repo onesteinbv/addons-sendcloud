@@ -1,7 +1,7 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 
 class SendcloudReturn(models.Model):
@@ -34,7 +34,11 @@ class SendcloudReturn(models.Model):
     items_cost = fields.Float()
     delivered_at = fields.Char()
     delivery_option = fields.Selection(
-        [("drop_off_point", "Drop Off Point"), ("in_store", "In Store"), ("drop_off_labelless", "Labelless Drop Off")]
+        [
+            ("drop_off_point", "Drop Off Point"),
+            ("in_store", "In Store"),
+            ("drop_off_labelless", "Labelless Drop Off"),
+        ]
     )
 
     outgoing_parcel_tracking_url = fields.Char()
@@ -153,18 +157,19 @@ class SendcloudReturn(models.Model):
 
         refund = record_data.get("refund")
         if refund:
-            res.update({
-                "refund_type": refund["refund_type"]["code"],
-                "total_refund": refund["total_refund"],
-                "refunded_at": refund["refunded_at"],
-                "refund_message": refund["message"],
-            })
+            res.update(
+                {
+                    "refund_type": refund["refund_type"]["code"],
+                    "total_refund": refund["total_refund"],
+                    "refunded_at": refund["refunded_at"],
+                    "refund_message": refund["message"],
+                }
+            )
 
         return res
 
     @api.model
     def sendcloud_create_or_update_returns(self, return_data, company):
-
         if isinstance(return_data, dict):
             return_data = [return_data]
 

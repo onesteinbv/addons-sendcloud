@@ -1,8 +1,7 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-from odoo import api, models, fields
-from odoo.tools.safe_eval import safe_eval
+from odoo import api, fields, models
 
 
 class SendcloudSenderAddress(models.Model):
@@ -48,7 +47,6 @@ class SendcloudSenderAddress(models.Model):
 
     @api.model
     def sendcloud_update_sender_address(self, sender_addresses, company):
-
         # All addresses
         domain = [("company_id", "=", company.id)]
         all_records = self.with_context(active_test=False).search(domain)

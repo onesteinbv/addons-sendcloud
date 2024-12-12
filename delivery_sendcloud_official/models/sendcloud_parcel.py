@@ -3,14 +3,14 @@
 
 import base64
 
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval
 
 
 class SendcloudParcel(models.Model):
     _name = "sendcloud.parcel"
-    _inherit = ['sendcloud.mixin', 'mail.thread', 'mail.activity.mixin']
+    _inherit = ["sendcloud.mixin", "mail.thread", "mail.activity.mixin"]
     _description = "Sendcloud Parcel"
 
     @api.model
@@ -61,7 +61,7 @@ class SendcloudParcel(models.Model):
     parcel_item_ids = fields.One2many("sendcloud.parcel.item", "parcel_id")
     documents = fields.Text(
         string="Documents Data",
-        help="An array of documents. A parcel can contain multiple documents, for instance labels and a customs form. This field returns an array of all the available documents for this parcel."
+        help="An array of documents. A parcel can contain multiple documents, for instance labels and a customs form. This field returns an array of all the available documents for this parcel.",
     )
     note = fields.Text()
     type = fields.Char(
@@ -104,10 +104,13 @@ class SendcloudParcel(models.Model):
         "parcel_id",
         string="Documents",
     )
-    label_print_status = fields.Selection([
-        ('generated', 'Generated'),
-        ('printed', 'Printed'),
-    ], default='generated')
+    label_print_status = fields.Selection(
+        [
+            ("generated", "Generated"),
+            ("printed", "Printed"),
+        ],
+        default="generated",
+    )
 
     def action_parcel_documents(self):
         self.mapped("document_ids").unlink()
@@ -115,12 +118,14 @@ class SendcloudParcel(models.Model):
         for parcel in self:
             doc_vals = []
             for document_data in safe_eval(parcel.documents or "[]"):
-                doc_vals.append({
-                    "name": document_data["type"],
-                    "size": document_data["size"],
-                    "link": document_data["link"],
-                    "parcel_id": parcel.id,
-                })
+                doc_vals.append(
+                    {
+                        "name": document_data["type"],
+                        "size": document_data["size"],
+                        "link": document_data["link"],
+                        "parcel_id": parcel.id,
+                    }
+                )
             parcel.document_ids = self.env["sendcloud.parcel.document"].create(doc_vals)
             if not skip_get_parcel_document:
                 parcel.document_ids._generate_parcel_document()
@@ -238,18 +243,20 @@ class SendcloudParcel(models.Model):
             integration = parcel.company_id.sendcloud_default_integration_id
             label = integration.get_parcel_label(parcel.label_printer_url)
             filename = parcel._generate_parcel_label_filename()
-            attachment_id = self.env["ir.attachment"].create({
-                "name": filename,
-                "res_id": parcel.id,
-                "res_model": parcel._name,
-                "datas": base64.b64encode(label),
-                "description": parcel.name,
-            })
+            attachment_id = self.env["ir.attachment"].create(
+                {
+                    "name": filename,
+                    "res_id": parcel.id,
+                    "res_model": parcel._name,
+                    "datas": base64.b64encode(label),
+                    "description": parcel.name,
+                }
+            )
             parcel.attachment_id = attachment_id
 
     def _generate_parcel_label_filename(self):
         self.ensure_one()
-        if not self.name.lower().endswith('.pdf'):
+        if not self.name.lower().endswith(".pdf"):
             return self.name + ".pdf"
         return self.name
 
@@ -265,7 +272,6 @@ class SendcloudParcel(models.Model):
 
     @api.model
     def sendcloud_create_update_parcels(self, parcels_data, company_id):
-
         # All records
         all_records = self.search([("company_id", "=", company_id)])
 
@@ -324,7 +330,9 @@ class SendcloudParcel(models.Model):
                     if res.get("error"):
                         if res["error"]["code"] == 404:
                             continue  # ignore "Not Found" error
-                        raise UserError(_("Sendcloud: %s") % res["error"].get("message"))
+                        raise UserError(
+                            _("Sendcloud: %s") % res["error"].get("message")
+                        )
         return super().unlink()
 
     def action_create_return_parcel(self):
@@ -372,8 +380,7 @@ class SendcloudParcelDocument(models.Model):
     def action_get_parcel_document(self):
         self.ensure_one()
         if not self.link:
-            raise UserError(
-                _("Document not available: no link provided."))
+            raise UserError(_("Document not available: no link provided."))
         self._generate_parcel_document()
 
     def _generate_parcel_document(self):
@@ -381,17 +388,19 @@ class SendcloudParcelDocument(models.Model):
             integration = document.parcel_id.company_id.sendcloud_default_integration_id
             content = integration.get_parcel_document(document.link)
             filename = document.generate_parcel_document_filename()
-            attachment_id = self.env["ir.attachment"].create({
-                "name": filename,
-                "res_id": document.id,
-                "res_model": document._name,
-                "datas": base64.b64encode(content),
-                "description": document.name,
-            })
+            attachment_id = self.env["ir.attachment"].create(
+                {
+                    "name": filename,
+                    "res_id": document.id,
+                    "res_model": document._name,
+                    "datas": base64.b64encode(content),
+                    "description": document.name,
+                }
+            )
             document.attachment_id = attachment_id
 
     def generate_parcel_document_filename(self):
         self.ensure_one()
-        if not self.name.lower().endswith('.pdf'):
+        if not self.name.lower().endswith(".pdf"):
             return self.name + ".pdf"
         return self.name

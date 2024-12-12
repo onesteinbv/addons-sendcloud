@@ -3,7 +3,7 @@
 
 from datetime import datetime
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 
 class SendcloudInvoice(models.Model):
@@ -60,7 +60,6 @@ class SendcloudInvoice(models.Model):
 
     @api.model
     def sendcloud_update_invoices(self, invoice_data, company):
-
         # All records
         all_records = company.sendcloud_invoice_ids
 

@@ -3,7 +3,7 @@
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import fields, models, _
+from odoo import _, fields, models
 from odoo.exceptions import UserError
 
 
@@ -24,12 +24,14 @@ class SendcloudSyncOrderWizard(models.TransientModel):
                 _("No Sendcloud integrations found. Setup an integration first.")
             )
 
-        pickings = self.env["stock.picking"].search([
-            ("delivery_type", "=", "sendcloud"),
-            ("picking_type_code", "=", "outgoing"),
-            ("sale_id", "!=", False),
-            ("date", ">=", self.sync_from_date),
-        ])
+        pickings = self.env["stock.picking"].search(
+            [
+                ("delivery_type", "=", "sendcloud"),
+                ("picking_type_code", "=", "outgoing"),
+                ("sale_id", "!=", False),
+                ("date", ">=", self.sync_from_date),
+            ]
+        )
         if not pickings:
             raise UserError(
                 _("There are no outgoing shipments set with Sendcloud shipping method.")

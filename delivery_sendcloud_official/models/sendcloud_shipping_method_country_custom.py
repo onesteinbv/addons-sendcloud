@@ -1,7 +1,7 @@
 # Copyright 2021 Onestein (<https://www.onestein.eu>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-from odoo import models, fields
+from odoo import fields, models
 
 
 class SendcloudShippingMethodCountryCustom(models.Model):
@@ -18,5 +18,5 @@ class SendcloudShippingMethodCountryCustom(models.Model):
         comodel_name="product.product",
         string="Specific Delivery Product",
         domain="[('type', '=', 'service')]",
-        help="This product will be used on the sale order line"
+        help="This product will be used on the sale order line",
     )

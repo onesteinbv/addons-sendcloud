@@ -1,14 +1,14 @@
 # Copyright 2021 Onestein (<https://www.onestein.nl>)
 # License OPL-1 (https://www.odoo.com/documentation/16.0/legal/licenses.html#odoo-apps).
 
-from collections import defaultdict
-import logging
 import json
+import logging
 import uuid
+from collections import defaultdict
 
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import float_round, float_repr
+from odoo.tools import float_repr, float_round
 from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
@@ -52,34 +52,55 @@ class StockPicking(models.Model):
 
     label_print_status = fields.Selection(
         [
-            ('generated', 'Generated'),
-            ('printed', 'Printed'),
-            ('partial', 'Partially Printed'),
+            ("generated", "Generated"),
+            ("printed", "Printed"),
+            ("partial", "Partially Printed"),
         ],
-        compute='_compute_label_print_status',
+        compute="_compute_label_print_status",
         store=True,
     )
 
-    @api.depends('sendcloud_parcel_ids', 'sendcloud_parcel_ids.label_print_status')
+    @api.depends("sendcloud_parcel_ids", "sendcloud_parcel_ids.label_print_status")
     def _compute_label_print_status(self):
         for picking in self.filtered(lambda x: x.sendcloud_parcel_ids):
-            if all(parcel.label_print_status == 'generated' for parcel in picking.sendcloud_parcel_ids):
-                picking.label_print_status = 'generated'
-            elif all(parcel.label_print_status == 'printed' for parcel in picking.sendcloud_parcel_ids):
-                picking.label_print_status = 'printed'
+            if all(
+                parcel.label_print_status == "generated"
+                for parcel in picking.sendcloud_parcel_ids
+            ):
+                picking.label_print_status = "generated"
+            elif all(
+                parcel.label_print_status == "printed"
+                for parcel in picking.sendcloud_parcel_ids
+            ):
+                picking.label_print_status = "printed"
             else:
-                picking.label_print_status = 'partial'
+                picking.label_print_status = "partial"
         for picking in self.filtered(lambda x: not x.sendcloud_parcel_ids):
             picking.label_print_status = None
 
-    @api.depends("carrier_id.sendcloud_integration_id", "carrier_id.sendcloud_carrier", "partner_id.country_id.code", "partner_id.zip")
+    @api.depends(
+        "carrier_id.sendcloud_integration_id",
+        "carrier_id.sendcloud_carrier",
+        "partner_id.country_id.code",
+        "partner_id.zip",
+    )
     def _compute_sendcloud_sp_details(self):
-        user_lang = self.env.user.lang.replace('_', '-').lower()
-        available_languages = ["en-us", "de-de", "en-gb", "es-es", "fr-fr", "it-it", "nl-nl"]
+        user_lang = self.env.user.lang.replace("_", "-").lower()
+        available_languages = [
+            "en-us",
+            "de-de",
+            "en-gb",
+            "es-es",
+            "fr-fr",
+            "it-it",
+            "nl-nl",
+        ]
         for picking in self:
             vals = {
                 "api_key": picking.sudo().carrier_id.sendcloud_integration_id.public_key,
-                "country": picking.partner_id.country_id.code and picking.partner_id.country_id.code.lower() or "",
+                "country": picking.partner_id.country_id.code
+                and picking.partner_id.country_id.code.lower()
+                or "",
                 "postalcode": picking.partner_id.zip or "",
                 "language": user_lang if user_lang in available_languages else "en-us",
                 "carrier": picking.carrier_id.sendcloud_carrier or "",
@@ -204,9 +225,7 @@ class StockPicking(models.Model):
         service_point_id = service_point_data.get("id")
         if service_point_id:
             service_point_id = int(service_point_data["id"])
-        vals.update(
-            {"to_service_point": service_point_id}
-        )
+        vals.update({"to_service_point": service_point_id})
         # TODO
         vals.update(
             {
@@ -233,19 +252,28 @@ class StockPicking(models.Model):
         parcel_items = []
         move_lines = self.move_ids.mapped("move_line_ids")
         if package:
-            move_lines = move_lines.filtered(lambda l: l.package_id == package or l.result_package_id == package)
+            move_lines = move_lines.filtered(
+                lambda l: l.package_id == package or l.result_package_id == package
+            )
         else:
-            move_lines = move_lines.filtered(lambda l: not l.package_id and not l.result_package_id)
+            move_lines = move_lines.filtered(
+                lambda l: not l.package_id and not l.result_package_id
+            )
         if move_lines:
             moves = move_lines.mapped("move_id")
         else:
             moves = self.move_ids  # TODO should be never the case, raise an error?
         total_weight = 0.0
         for move in moves:
-            line_vals = self._prepare_sendcloud_item_vals_from_moves(move, package=package)
+            line_vals = self._prepare_sendcloud_item_vals_from_moves(
+                move, package=package
+            )
             total_weight += line_vals["weight"]
-            line_vals["weight"] = line_vals["weight"] / line_vals["quantity"] \
-                if line_vals["quantity"] else 0.0
+            line_vals["weight"] = (
+                line_vals["weight"] / line_vals["quantity"]
+                if line_vals["quantity"]
+                else 0.0
+            )
             parcel_items += [line_vals]
 
         vals["parcel_items"] = parcel_items
@@ -312,9 +340,7 @@ class StockPicking(models.Model):
 
     @api.model
     def _check_state_requires_hs_code(self, country_code, state_code):
-        states = {
-            "ES": ["TF", "GC"]
-        }
+        states = {"ES": ["TF", "GC"]}
         return country_code in states and state_code in states[country_code]
 
     def _prepare_sendcloud_item_vals_from_moves(self, move, package=False):
@@ -324,21 +350,29 @@ class StockPicking(models.Model):
         if not package:
             quantity = int(move.product_uom_qty)  # TODO should be quantity_done ?
         else:
-            move_lines = move.move_line_ids.filtered(lambda l: l.result_package_id == package)
+            move_lines = move.move_line_ids.filtered(
+                lambda l: l.result_package_id == package
+            )
             if move_lines:
-                quantity = sum(move_lines.mapped('qty_done'))
+                quantity = sum(move_lines.mapped("qty_done"))
             else:
-                quantity = sum(package.mapped('quant_ids.quantity'))
+                quantity = sum(package.mapped("quant_ids.quantity"))
 
         partner_country = self.partner_id.country_id.code
         is_outside_eu = not self.partner_id.sendcloud_is_in_eu
 
         partner_state = self.partner_id.state_id.code
-        state_requires_hs_code = self._check_state_requires_hs_code(partner_country, partner_state)
+        state_requires_hs_code = self._check_state_requires_hs_code(
+            partner_country, partner_state
+        )
 
         price = move.sale_line_id.price_unit
         precision_digits = move.sale_line_id.currency_id.decimal_places
-        if hasattr(move, 'bom_line_id') and move.bom_line_id and move.bom_line_id.bom_id.type == 'phantom':
+        if (
+            hasattr(move, "bom_line_id")
+            and move.bom_line_id
+            and move.bom_line_id.bom_id.type == "phantom"
+        ):
             # We want to compute each subproduct price based on the kit product price and the total price of all components of the kit.
             # Example. Kit price is 30€, it is made up of 3 subproducts costing 15€, 15€ and 10€.
             # Subproduct 1: Price ((15/40)*30) = 11,25€
@@ -349,18 +383,25 @@ class StockPicking(models.Model):
             for line in move.bom_line_id.bom_id.bom_line_ids:
                 if line._skip_bom_line(move.sale_line_id.product_id):
                     continue
-                total_price += (line.product_id.lst_price * line.product_qty)
+                total_price += line.product_id.lst_price * line.product_qty
 
             subproduct = move.bom_line_id.product_id
             kit_product = move.sale_line_id.product_id
-            if kit_product.lst_price:   # Prevent division by 0
+            if kit_product.lst_price:  # Prevent division by 0
                 value = float_repr(
-                    float_round((subproduct.lst_price / total_price) * price, precision_digits=precision_digits),
-                    precision_digits=precision_digits)
+                    float_round(
+                        (subproduct.lst_price / total_price) * price,
+                        precision_digits=precision_digits,
+                    ),
+                    precision_digits=precision_digits,
+                )
             else:
                 value = 0
         else:
-            value = float_repr(float_round(price, precision_digits=precision_digits), precision_digits=precision_digits)
+            value = float_repr(
+                float_round(price, precision_digits=precision_digits),
+                precision_digits=precision_digits,
+            )
 
         # Parcel items (mandatory)
         line_vals = {
@@ -386,7 +427,9 @@ class StockPicking(models.Model):
                 )
             if not parcel_item_outside_eu.get("origin_country"):
                 raise ValidationError(
-                    _("Origin Country is mandatory when shipping outside of EU and to some states.")
+                    _(
+                        "Origin Country is mandatory when shipping outside of EU and to some states."
+                    )
                 )
             line_vals.update(parcel_item_outside_eu)
         # Parcel items (optional)
@@ -413,22 +456,23 @@ class StockPicking(models.Model):
         product_tmplate = move.product_tmpl_id
         hs_code = product_tmplate.hs_code
         origin_country = product_tmplate.country_of_origin.code
-        is_product_harmonized_system_installed = self.env["ir.module.module"].search([
-            ("name", "=", "product_harmonized_system"),
-            ("state", "=", "installed")
-        ], limit=1)
+        is_product_harmonized_system_installed = self.env["ir.module.module"].search(
+            [("name", "=", "product_harmonized_system"), ("state", "=", "installed")],
+            limit=1,
+        )
         if is_product_harmonized_system_installed:
             # use field provided by OCA module "product_harmonized_system" if installed
             hs_code = product_tmplate.hs_code_id.hs_code
             origin_country = product_tmplate.origin_country_id.code or origin_country
-        is_account_intrastat_installed = self.env["ir.module.module"].search([
-            ("name", "=", "account_intrastat"),
-            ("state", "=", "installed")
-        ], limit=1)
+        is_account_intrastat_installed = self.env["ir.module.module"].search(
+            [("name", "=", "account_intrastat"), ("state", "=", "installed")], limit=1
+        )
         if is_account_intrastat_installed:
             # use field provided by Enterprise module "account_intrastat" if installed
             hs_code = product_tmplate.intrastat_code_id.code or hs_code
-            origin_country = product_tmplate.intrastat_origin_country_id.code or origin_country
+            origin_country = (
+                product_tmplate.intrastat_origin_country_id.code or origin_country
+            )
         return {"hs_code": hs_code, "origin_country": origin_country}
 
     def _prepare_sendcloud_parcels_from_picking(self):
@@ -447,7 +491,10 @@ class StockPicking(models.Model):
 
         total_sendcloud_package_weight = 0.0
         for package in colli:
-            weight = package.shipping_weight or package.with_context(picking_id=self.id).weight
+            weight = (
+                package.shipping_weight
+                or package.with_context(picking_id=self.id).weight
+            )
             weight = self._sendcloud_convert_weight_to_kg(weight)
             weight = self._sendcloud_check_collo_weight(weight)
             total_sendcloud_package_weight += weight
@@ -518,7 +565,9 @@ class StockPicking(models.Model):
             and self.delivery_type == "sendcloud"
             and self.picking_type_code == "outgoing"
         ):
-            action = "delivery_sendcloud_official.sendcloud_cancel_shipment_confirm_wizard"
+            action = (
+                "delivery_sendcloud_official.sendcloud_cancel_shipment_confirm_wizard"
+            )
             return self.env.ref(action).read()[0]
         return super().cancel_shipment()
 
@@ -537,7 +586,9 @@ class StockPicking(models.Model):
             integration = picking.carrier_id.sendcloud_integration_id
             if picking.sendcloud_shipment_uuid:
                 vals = {"shipment_uuid": picking.sendcloud_shipment_uuid}
-                picking.with_context(skip_sync_picking_to_sendcloud=True).sendcloud_shipment_uuid = None
+                picking.with_context(
+                    skip_sync_picking_to_sendcloud=True
+                ).sendcloud_shipment_uuid = None
             else:
                 vals = picking.generate_sendcloud_ref_uuid_vals()
             if integration.id not in res:
@@ -551,9 +602,13 @@ class StockPicking(models.Model):
             integration = self.env["sendcloud.integration"].browse(integration_id)
             vals_list = to_delete_shipments[integration_id]
             for vals in vals_list:
-                response = integration.delete_shipments(integration.sendcloud_code, vals)
+                response = integration.delete_shipments(
+                    integration.sendcloud_code, vals
+                )
                 if response.get("error"):
-                    picking_id = vals.get("external_shipment_id") or vals.get("shipment_uuid")
+                    picking_id = vals.get("external_shipment_id") or vals.get(
+                        "shipment_uuid"
+                    )
                     _logger.error(
                         "Sendcloud deleting picking %s error: %s",
                         picking_id,
@@ -561,11 +616,12 @@ class StockPicking(models.Model):
                     )
 
     def action_download_sendcloud_labels(self):
-        if self.mapped('sendcloud_parcel_ids').mapped('attachment_id'):
+        if self.mapped("sendcloud_parcel_ids").mapped("attachment_id"):
             return {
-                'type': 'ir.actions.act_url',
-                'url': '/sendcloud/picking/download_labels?ids=%s' % (','.join([str(id) for id in self.ids])),
-                'target': 'self',
+                "type": "ir.actions.act_url",
+                "url": "/sendcloud/picking/download_labels?ids=%s"
+                % (",".join([str(id) for id in self.ids])),
+                "target": "self",
             }
 
     def action_multi_create_sendcloud_labels(self):
@@ -578,7 +634,11 @@ class StockPicking(models.Model):
 
     def button_create_sendcloud_labels(self):
         self.ensure_one()
-        if self.picking_type_code == "outgoing" and self.delivery_type == "sendcloud" and self.sale_id:
+        if (
+            self.picking_type_code == "outgoing"
+            and self.delivery_type == "sendcloud"
+            and self.sale_id
+        ):
             integration = self.carrier_id.sendcloud_integration_id
             vals = self._prepare_sendcloud_parcels_from_picking()
             parcels_data = self._sendcloud_sync_multiple_parcels(integration, vals)
@@ -656,7 +716,7 @@ class StockPicking(models.Model):
             and p.picking_type_code == "outgoing"
             and p.state != "cancel"
             and p.sale_id
-        )   # TODo add "or uuid has a value"
+        )  # TODo add "or uuid has a value"
         integration_map = defaultdict(list)
         for picking in pickings:
             integration = picking.carrier_id.sendcloud_integration_id
@@ -693,25 +753,35 @@ class StockPicking(models.Model):
 
     def _sync_shipment_to_sendcloud(self, err_msg, integration, vals):
         _logger.info("Sendcloud create_shipments:%s", integration.sendcloud_code)
-        response = integration\
-            .with_context(sendcloud_ok_response_status=(200, 201))\
-            .create_shipments(integration.sendcloud_code, vals)
+        response = integration.with_context(
+            sendcloud_ok_response_status=(200, 201)
+        ).create_shipments(integration.sendcloud_code, vals)
         for confirmation in response:
             status = confirmation.get("status")
 
             sendcloud_shipment_uuid = confirmation.get("shipment_uuid")
-            if len(self) == 1 and self.sendcloud_shipment_uuid == sendcloud_shipment_uuid:
+            if (
+                len(self) == 1
+                and self.sendcloud_shipment_uuid == sendcloud_shipment_uuid
+            ):
                 picking = self
             else:
-                picking = self.search([("sendcloud_shipment_uuid", "=", sendcloud_shipment_uuid)], limit=1)
+                picking = self.search(
+                    [("sendcloud_shipment_uuid", "=", sendcloud_shipment_uuid)], limit=1
+                )
             if not picking:
                 external_shipment_id = confirmation.get("external_shipment_id")
                 if not external_shipment_id:
                     raise  # TODO
-                if len(self) == 1 and self.sendcloud_shipment_uuid == sendcloud_shipment_uuid:
+                if (
+                    len(self) == 1
+                    and self.sendcloud_shipment_uuid == sendcloud_shipment_uuid
+                ):
                     picking = self
                 else:
-                    picking = self.env["stock.picking"].search([("sendcloud_shipment_code", "=", external_shipment_id)])
+                    picking = self.env["stock.picking"].search(
+                        [("sendcloud_shipment_code", "=", external_shipment_id)]
+                    )
                     if len(picking) != 1:
                         raise  # TODO
 
@@ -769,7 +839,6 @@ class StockPicking(models.Model):
         res = self.env["sendcloud.parcel"]
         odoo_parcels_vals = []
         for parcel in parcels_data:
-
             # Prepare parcel vals list
             parcels_vals = self.env[
                 "sendcloud.parcel"
