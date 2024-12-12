@@ -562,7 +562,6 @@ class StockPicking(models.Model):
 
     def action_download_sendcloud_labels(self):
         if self.mapped('sendcloud_parcel_ids').mapped('attachment_id'):
-            self.mapped('sendcloud_parcel_ids').write({'label_print_status': 'printed'})
             return {
                 'type': 'ir.actions.act_url',
                 'url': '/sendcloud/picking/download_labels?ids=%s' % (','.join([str(id) for id in self.ids])),
