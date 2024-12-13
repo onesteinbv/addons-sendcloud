@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 
 import requests
 
-from odoo import _, models
+from odoo import SUPERUSER_ID, _, api, models, registry
 from odoo.exceptions import UserError
 
 
@@ -65,12 +65,14 @@ class SendcloudRequest(models.AbstractModel):
 
         end_time = time.time()
         response_time = end_time - start_time
+        with registry(self.env.cr.dbname).cursor() as new_cr:
+            # Create a new environment with new cursor database
+            new_env = api.Environment(new_cr, SUPERUSER_ID, self.env.context)
+            self.with_env(new_env)._log_response_in_action(
+                resp, type_request, url, str(data), response_time
+            )
         err_msg = self._check_response_ok(resp)
         if err_msg:
-            self.env.cr.rollback()
-        self._log_response_in_action(resp, type_request, url, str(data), response_time)
-        if err_msg:
-            self.env.cr.commit()
             err_msg = err_msg + "\n" + _("Request: %s") % data
             raise UserError(err_msg)
         return resp
@@ -81,9 +83,8 @@ class SendcloudRequest(models.AbstractModel):
         ok_status = self._ok_response_status()
         err_msg = ""
         if resp.status_code not in ok_status:
-            err_msg = _("Sendcloud: %s (error code %s)") % (
-                resp.reason,
-                resp.status_code,
+            err_msg = _("Sendcloud: %(reason)s (error code %(status_code)s)") % (
+                {"reason": resp.reason, "status_code": resp.status_code}
             )
             if resp.status_code == 500:
                 err_msg += "\n" + _("Internal server error.")
@@ -135,12 +136,12 @@ class SendcloudRequest(models.AbstractModel):
 
     def _iterate_pagination(self, response, urlpath, list_name):
         res = response.get(list_name)
-        next = response.get("next")
-        while next:
+        next_response = response.get("next")
+        while next_response:
             parsed_next = urlparse(response.get("next"))
             response = self._get_panel_request(urlpath + "?" + parsed_next.query)
             res += response.get(list_name)
-            next = response.get("next")
+            next_response = response.get("next")
         return res
 
     def _get_request(self, url, params=None):
@@ -159,11 +160,11 @@ class SendcloudRequest(models.AbstractModel):
         return self._format_response(res)
 
     def _format_response(self, res):
+        """
+        The HTTP 204 No Content success status response code indicates that the
+        request has succeeded, but that the reply message is empty.
+        """
         if res.status_code == 204:
-            """
-            The HTTP 204 No Content success status response code indicates that the
-            request has succeeded, but that the reply message is empty.
-            """
             return {}
         try:
             res = res.json()

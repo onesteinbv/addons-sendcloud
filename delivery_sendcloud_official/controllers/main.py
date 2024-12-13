@@ -21,8 +21,8 @@ class DeliverySendcloud(http.Controller):
     @http.route(["/sendcloud/picking/download_labels"], type="http", auth="public")
     def sendcloud_picking_download_labels(self, ids, **post):
         picking_ids = []
-        for id in ids.split(","):
-            picking_ids.append(int(id))
+        for picking_id in ids.split(","):
+            picking_ids.append(int(picking_id))
         pickings = request.env["stock.picking"].browse(picking_ids)
         file_data = []
         for attachment in pickings.mapped("sendcloud_parcel_ids").mapped(

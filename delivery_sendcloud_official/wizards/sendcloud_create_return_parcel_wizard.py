@@ -238,7 +238,10 @@ class SendcloudCreateReturnParcelWizard(models.TransientModel):
         if response.get("error"):
             error_msg = response.get("error", {}).get("message", "")
             error_code = response.get("error", {}).get("code", "")
-            raise UserError(_("Sendcloud: error %s\n%s") % (error_code, error_msg))
+            raise UserError(
+                _("Sendcloud: error %(error_code)s\n%(error_msg)s")
+                % ({"error_code": error_code, "error_msg": error_msg})
+            )
         portal = response.get("portal")
         return_portal_url = "https://%s.shipping-portal.com/rp/" % portal.get("domain")
         self.reasons = portal.get("reasons")
@@ -299,9 +302,8 @@ class SendcloudCreateReturnParcelWizard(models.TransientModel):
         )
         if outgoing_parcel_data.get("error"):
             res_error = outgoing_parcel_data.get("error")
-            err_msg = _("Sendcloud: %s (error code: '%s')") % (
-                res_error.get("message"),
-                res_error.get("code"),
+            err_msg = _("Sendcloud: %(message)s (error code: '%(code)s')") % (
+                {"message": res_error.get("message"), "code": res_error.get("code")}
             )
             self.error_message = "%s\n" % err_msg
         else:

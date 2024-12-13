@@ -1,11 +1,12 @@
 /** @odoo-module **/
-import { WarningDialog } from '@web/core/errors/error_dialogs';
-import { registry } from "@web/core/registry";
+/* global sendcloud */
+import { Component, onWillStart } from "@odoo/owl";
 import { _lt } from "@web/core/l10n/translation";
+import { loadJS } from "@web/core/assets";
+import { registry } from "@web/core/registry";
 import { useInputField } from "@web/views/fields/input_field_hook";
 import { useService } from "@web/core/utils/hooks";
-import { Component, onWillStart } from "@odoo/owl";
-import { loadJS } from "@web/core/assets";
+import { WarningDialog } from '@web/core/errors/error_dialogs';
 
 export class ServicePointSelectorField extends Component {
     setup() {
@@ -14,7 +15,7 @@ export class ServicePointSelectorField extends Component {
         onWillStart(() => loadJS("/delivery_sendcloud_official/static/src/lib/sendcloud/api.min.js"));
     }
 
-    async onClearClick(event) {
+    async onClearClick() {
         this.props.update("");
     }
 
@@ -34,7 +35,7 @@ export class ServicePointSelectorField extends Component {
         this.props.update(JSON.stringify(servicePoint));
     }
 
-    async onInputClick(ev) {
+    async onInputClick() {
         var value = this.props.record.data.sendcloud_sp_details;
         if (!value) {
             return "";

@@ -8,6 +8,7 @@
     "category": "Operations/Inventory/Delivery",
     "version": "16.0.1.1.0",
     "author": "Onestein",
+    "website": "https://www.onestein.nl",
     "license": "OPL-1",
     "depends": ["web", "delivery", "base_address_extended"],
     "data": [

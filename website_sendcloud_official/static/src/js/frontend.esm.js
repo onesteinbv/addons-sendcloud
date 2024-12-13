@@ -1,14 +1,10 @@
 /** @odoo-module */
-
-import session from 'web.session';
-import publicWidget from 'web.public.widget';
-import core from 'web.core';
-import { _t } from 'web.core';
-import { loadJS } from "@web/core/assets";
+/* global sendcloud */
 import concurrency from 'web.concurrency';
-
-const { onWillStart } = owl;
-const Dialog = require('web.Dialog');
+import { core } from 'web.core';
+import { loadJS } from "@web/core/assets";
+import publicWidget from "@web/legacy/js/public/public_widget";
+import { session } from "@web/session";
 const QWeb = core.qweb;
 const WebsiteSaleDeliverySendcloudWidget = publicWidget.registry.websiteSaleDelivery;
 
@@ -18,8 +14,8 @@ WebsiteSaleDeliverySendcloudWidget.include({
             "click .o_website_sendcloud_address": "_onClickSendcloudAddress"
     }),
 
-    init(parent, params = {}) {
-        this._super.apply(this, arguments);
+    init() {
+        this._super(...arguments);
         this.dp = new concurrency.DropPrevious();
         loadJS("/delivery_sendcloud_official/static/src/lib/sendcloud/api.min.js");
     },
@@ -113,9 +109,9 @@ WebsiteSaleDeliverySendcloudWidget.include({
     _onServicePointError: function(errors) {
         const irrelevantErrors = ['Closed'];
         var relevantErrors = _.difference(errors, irrelevantErrors);
-
         if (relevantErrors.length) {
-            return Dialog.alert(this, relevantErrors.join("\n"));
+            alert(relevantErrors.join("\n"));
+            return;
         }
     },
 

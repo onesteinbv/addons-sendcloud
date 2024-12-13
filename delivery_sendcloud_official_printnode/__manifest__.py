@@ -8,6 +8,7 @@
     "category": "Operations/Inventory/Delivery",
     "version": "16.0.1.1.0",
     "author": "Onestein",
+    "website": "https://www.onestein.nl",
     "license": "OPL-1",
     "depends": ["delivery_sendcloud_official", "printnode_base"],
     "data": ["views/stock_picking_view.xml"],

@@ -700,9 +700,11 @@ class StockPicking(models.Model):
         if response.get("failed_parcels"):
             err_msg = ""
             for failed in response.get("failed_parcels"):
-                err_msg += _("%s:\n%s\n\n") % (
-                    str(failed.get("parcel")),
-                    str(failed.get("errors")),
+                err_msg += _("%(parcel)s:\n%(errors)s\n\n") % (
+                    {
+                        "parcel": str(failed.get("parcel")),
+                        "errors": str(failed.get("errors")),
+                    }
                 )
             raise UserError(_("Sendcloud: %s") % err_msg)
         return response["parcels"]
@@ -804,9 +806,14 @@ class StockPicking(models.Model):
                     str(picking.id),
                     str(vals),
                 )
-                err_msg += _("Order %s (shipment %s) returned an error:\n") % (
-                    error.get("external_order_id"),
-                    error.get("external_shipment_id"),
+                err_msg += _(
+                    "Order %(external_order_id)s (shipment %"
+                    "(external_shipment_id)s) returned an error:\n"
+                ) % (
+                    {
+                        "external_order_id": error.get("external_order_id"),
+                        "external_shipment_id": error.get("external_shipment_id"),
+                    }
                 )
                 err_msg += str(error) + "\n\n"
         return err_msg

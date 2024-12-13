@@ -8,6 +8,7 @@
     "category": "Website/Website",
     "version": "16.0.1.0.0",
     "author": "Onestein",
+    "website": "https://www.onestein.nl",
     "license": "OPL-1",
     "depends": ["website_sale_delivery", "delivery_sendcloud_official"],
     "data": [

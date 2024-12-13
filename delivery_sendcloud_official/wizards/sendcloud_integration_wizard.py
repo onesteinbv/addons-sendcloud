@@ -58,12 +58,11 @@ class SendcloudIntegrationWizard(models.TransientModel):
         except Exception as err:
             self.error_message = _("Error while checking the webhook connection.\n")
             self.error_message += "%s\n" % str(err)
-            self.error_message += _("Webhook URL: %s\n" % url)
+            self.error_message += _("Webhook URL: %(url)s\n") % {"url": url}
             return False
         if resp.status_code != 200:
-            err_msg = _("Webhook URL: %s (error code %s)") % (
-                resp.reason,
-                resp.status_code,
+            err_msg = _("Webhook URL: %(reason)s (error code %(status_code)s)") % (
+                {"reason": resp.reason, "status_code": resp.status_code}
             )
             self.error_message = _("Error while checking the webhook connection.\n")
             self.error_message += "%s\n" % err_msg
