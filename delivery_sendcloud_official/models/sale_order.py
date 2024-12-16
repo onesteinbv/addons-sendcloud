@@ -86,7 +86,7 @@ class SaleOrder(models.Model):
     def _compute_sendcloud_order_weight(self):
         for order in self:
             lines = order.order_line.filtered(
-                lambda l: not l.display_type and l.product_id.weight
+                lambda ol: not ol.display_type and ol.product_id.weight
             )
             weight = sum(
                 [(line.product_id.weight * line.product_qty) for line in lines]
