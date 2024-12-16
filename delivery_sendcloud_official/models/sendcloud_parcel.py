@@ -265,7 +265,7 @@ class SendcloudParcel(models.Model):
             code = parcel.sendcloud_code
             integration = parcel.company_id.sendcloud_default_integration_id
             response = integration.get_return_portal_url(code)
-            if response.get("url") == None:
+            if response.get("url") is None:
                 parcel.return_portal_url = "None"
             else:
                 parcel.return_portal_url = response.get("url")

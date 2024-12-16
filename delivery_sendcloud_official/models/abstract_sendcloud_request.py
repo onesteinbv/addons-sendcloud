@@ -48,13 +48,17 @@ class SendcloudRequest(models.AbstractModel):
                 resp = requests.get(url=url, params=data, auth=auth)
             elif type_request == "PUT":
                 resp = requests.put(url=url, json=data, auth=auth)
-        except requests.ConnectionError:
-            raise UserError(_("Sendcloud: server not reachable, try again later"))
-        except requests.Timeout:
-            raise UserError(_("Sendcloud timeout: the server didn't reply within 30s"))
-        except requests.HTTPError:
+        except requests.ConnectionError as CE:
+            raise UserError(
+                _("Sendcloud: server not reachable, try again later")
+            ) from CE
+        except requests.Timeout as TO:
+            raise UserError(
+                _("Sendcloud timeout: the server didn't reply within 30s")
+            ) from TO
+        except requests.HTTPError as HE:
             error_msg = resp.json().get("error", {}).get("message", "")
-            raise UserError(_("Sendcloud: %s") % error_msg or resp.text)
+            raise UserError(_("Sendcloud: %s") % error_msg or resp.text) from HE
 
         # Handle request limiting (retry after one second)
         if resp.status_code == 429:
@@ -113,7 +117,7 @@ class SendcloudRequest(models.AbstractModel):
         decoded_content = "Byte content"
         try:
             decoded_content = resp.content.decode()
-        except:
+        except Exception:
             pass
         if resp.status_code == 401 and not self.env.context.get("skip_raise_error_401"):
             error_msg = resp.json().get("error", {}).get("message", "")

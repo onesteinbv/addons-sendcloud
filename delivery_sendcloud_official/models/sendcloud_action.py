@@ -57,6 +57,7 @@ class SendcloudAction(models.Model):
             else:
                 action.record_id = False
 
+    # flake8: noqa: C901
     def parse_result(self):
         self.ensure_one()
 

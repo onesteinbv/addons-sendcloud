@@ -130,6 +130,7 @@ class StockPicking(models.Model):
         for picking in self:
             picking.sendcloud_parcel_count = len(picking.sendcloud_parcel_ids)
 
+    # flake8: noqa: C901
     def _prepare_sendcloud_vals_from_picking(self, package=False):
         self.ensure_one()
 
