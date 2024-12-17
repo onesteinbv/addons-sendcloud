@@ -1,11 +1,10 @@
 /** @odoo-module */
 /* global sendcloud */
 import concurrency from 'web.concurrency';
-import { core } from 'web.core';
 import { loadJS } from "@web/core/assets";
 import publicWidget from "@web/legacy/js/public/public_widget";
 import { session } from "@web/session";
-const QWeb = core.qweb;
+import { qweb } from 'web.core';
 const WebsiteSaleDeliverySendcloudWidget = publicWidget.registry.websiteSaleDelivery;
 
 WebsiteSaleDeliverySendcloudWidget.include({
@@ -84,7 +83,7 @@ WebsiteSaleDeliverySendcloudWidget.include({
 
         // Update view
         this.$('.o_website_sendcloud_address').remove();
-        var address = QWeb.render("website_sendcloud_official.Address", {
+        var address = qweb.render("website_sendcloud_official.Address", {
             servicePoint: servicePoint
         });
         $btn.after(address);
