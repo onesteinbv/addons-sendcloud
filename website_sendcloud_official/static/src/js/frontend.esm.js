@@ -3,8 +3,9 @@
 import concurrency from 'web.concurrency';
 import { loadJS } from "@web/core/assets";
 import publicWidget from "@web/legacy/js/public/public_widget";
-import { session } from "@web/session";
 import { qweb } from 'web.core';
+import { session } from "@web/session";
+import "website_sale_delivery.checkout";
 const WebsiteSaleDeliverySendcloudWidget = publicWidget.registry.websiteSaleDelivery;
 
 WebsiteSaleDeliverySendcloudWidget.include({
