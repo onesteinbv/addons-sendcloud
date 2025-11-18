@@ -274,15 +274,15 @@ class DeliveryCarrier(models.Model):
             if not (self.sendcloud_min_weight <= weight <= self.sendcloud_max_weight):
                 return False
             if (
-                    self.sendcloud_service_point_input == "required"
-                    and self.sendcloud_integration_id.service_point_enabled
+                self.sendcloud_service_point_input == "required"
+                and self.sendcloud_integration_id.service_point_enabled
             ):
                 carrier_names = self.sendcloud_integration_id.service_point_carriers
                 current_carrier = self.sendcloud_carrier
                 if not (
-                        current_carrier
-                        and current_carrier in safe_eval(carrier_names)
-                        or False
+                    current_carrier
+                    and current_carrier in safe_eval(carrier_names)
+                    or False
                 ):
                     return False
             warehouse = order.warehouse_id
